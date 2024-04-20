@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
+
+[CreateAssetMenu(menuName = "GamePlay/Actions/Launch Projectile Action")]
+public class LaunchProjectileAction : Action
+{
+    private bool m_Launched = false;
+
+    public override bool OnStart(ServerCharacter serverCharacter)
+    {
+        serverCharacter.physicsWrapper.Transform.forward = Data.Direction;
+
+        return true;
+    }
+
+    public override bool OnUpdate(ServerCharacter clientCharacter)
+    {
+        if (!m_Launched)
+        {
+            LaunchProjectile(clientCharacter);
+        }
+        return true;
+    }
+    public override void Reset()
+    {
+        m_Launched = false;
+        base.Reset();
+    }
+
+    protected void LaunchProjectile(ServerCharacter parent)
+    {
+        if (!m_Launched)
+        {
+            m_Launched = true;
+            var projectileInfo = GetProjectileInfo();
+            NetworkObject networkObject = NetworkObjectPool.Singleton.GetNetworkObject(projectileInfo.Prefab, projectileInfo.Prefab.transform.position, projectileInfo.Prefab.transform.rotation);
+            networkObject.transform.forward = parent.physicsWrapper.transform.forward;
+            networkObject.transform.position = parent.physicsWrapper.Transform.localToWorldMatrix.MultiplyPoint(networkObject.transform.position);
+            networkObject.Spawn(true);
+        }
+    }
+    protected virtual ProjectileInfo GetProjectileInfo()
+    {
+        foreach (var projectileInfo in Config.Projectiles)
+        {
+            if (projectileInfo.Prefab && projectileInfo.Prefab.GetComponent<PhysicsProjectile>())
+                return projectileInfo;
+        }
+        throw new System.Exception($"Action {name} has no usable Projectiles!");
+    }
+    public override void End(ServerCharacter serverCharacter)
+    {
+        LaunchProjectile(serverCharacter);
+    }
+}
