@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4472268218325407675}
   - component: {fileID: 5536631736486532258}
   - component: {fileID: 4821486874345518897}
+  - component: {fileID: 4071215323443648329}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -120,6 +121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410a2b2f6f2b6864cbab1669e9a38a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_NavMeshAgent: {fileID: 4071215323443648329}
+  m_Rigidbody: {fileID: 4821486874345518897}
+  m_ServerCharacter: {fileID: 2394967949675064725}
 --- !u!114 &4472268218325407675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,6 +188,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 1
+--- !u!195 &4071215323443648329
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2106232342769059349}
+  m_Enabled: 0
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 10
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &2778411449642317831
 GameObject:
   m_ObjectHideFlags: 0

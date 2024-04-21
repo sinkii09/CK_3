@@ -12,6 +12,8 @@ public class ServerCharacter : NetworkBehaviour
 
     public ClientCharacter clientCharacter => m_ClientCharacter;
 
+    public NetworkVariable<MovementStatus> MovementStatus { get; } = new NetworkVariable<MovementStatus>();
+
     [SerializeField]
     ServerCharacterMovement m_Movement;
 
@@ -58,9 +60,9 @@ public class ServerCharacter : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SendCharacterInputServerRpc()
+    public void SendCharacterInputServerRpc(Vector3 movementTarget)
     {
-
+        m_Movement.SetMovementTarget(movementTarget);
     }
     [ServerRpc]
     public void RecvDoActionServerRPC(ActionRequestData data)

@@ -12,7 +12,9 @@ public class InputManager : ScriptableObject,IPlayerActions
     public event Action<bool> FireEvent;
     public event Action<Vector2> AimEvent;
 
-    public Vector2 AimPosition { get; private set; }
+
+
+    public Vector2 MousePosition { get; private set; }
 
     private PlayerInputActions _controller;
 
@@ -31,36 +33,29 @@ public class InputManager : ScriptableObject,IPlayerActions
     {
         
     }
-
-    public void OnFire(InputAction.CallbackContext context)
+    public Vector2 GetMouseScreenPosition()
     {
-        if(context.performed)
-        {
-            FireEvent?.Invoke(true);
-        }
+        return Mouse.current.position.ReadValue();
+    }
+    public bool IsRightMouseButtonDownThisFrame()
+    {
+        return _controller.Player.RightMouseClick.WasPressedThisFrame();
+    }
+     public void OnMousePosition(InputAction.CallbackContext context)
+    {
+        MousePosition = context.ReadValue<Vector2>();
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    public void OnRightMouseClick(InputAction.CallbackContext context)
     {
-        if(context.performed)
-        {
-            MoveEvent?.Invoke(context.ReadValue<Vector2>());
-        }
-        else if(context.canceled)
-        {
-            MoveEvent?.Invoke(Vector2.zero);
-        }
+
     }
 
-    public void OnAim(InputAction.CallbackContext context)
+    public void OnLeftMouseClick(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            AimPosition = context.ReadValue<Vector2>();
-        }
-        else if (context.canceled)
-        {
-            AimPosition = Vector2.zero;
+            FireEvent?.Invoke(true);
         }
     }
 }
