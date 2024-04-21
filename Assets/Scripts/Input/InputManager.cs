@@ -10,6 +10,7 @@ public class InputManager : ScriptableObject,IPlayerActions
 {
     public event Action<Vector2> MoveEvent;
     public event Action<bool> FireEvent;
+    public event Action<Vector2> AimEvent;
 
     public Vector2 AimPosition { get; private set; }
 
@@ -36,10 +37,6 @@ public class InputManager : ScriptableObject,IPlayerActions
         if(context.performed)
         {
             FireEvent?.Invoke(true);
-        }
-        else if(context.canceled)
-        {
-            FireEvent?.Invoke(false);
         }
     }
 

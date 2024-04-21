@@ -337,7 +337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ActionPrototypes:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 63bfe59f8351deb4dac9b0cf122586cb, type: 2}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

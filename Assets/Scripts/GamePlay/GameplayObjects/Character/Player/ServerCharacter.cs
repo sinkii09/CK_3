@@ -30,6 +30,7 @@ public class ServerCharacter : NetworkBehaviour
     public ServerActionPlayer ActionPlayer => m_ServerActionPlayer;
 
     [SerializeField] private Action m_StartingAction;
+
     private void Awake()
     {
         m_ServerActionPlayer = new ServerActionPlayer(this);
@@ -64,8 +65,9 @@ public class ServerCharacter : NetworkBehaviour
     [ServerRpc]
     public void RecvDoActionServerRPC(ActionRequestData data)
     {
+        ActionRequestData data1 = data;
         ActionPlayer.OnGameplayActivity(Action.GameplayActivity.UsingAttackAction);
-        
+        PlayAction(ref data1);
     }
     [ServerRpc]
     public void RecvStopChargingUpServerRpc()
@@ -81,5 +83,17 @@ public class ServerCharacter : NetworkBehaviour
         }
         m_ServerActionPlayer.PlayAction(ref action);
     }
-
+    public Action GetStartAction()
+    {
+        return m_StartingAction;
+    }
+    public Vector3 Aim(Vector2 lookDir, LayerMask layerMask)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(lookDir);
+        if (Physics.Raycast(ray, out RaycastHit hitinfo, layerMask))
+        {
+            return  new Vector3(hitinfo.point.x - transform.position.x,0, hitinfo.point.z - transform.position.z).normalized;
+        }
+        return Vector3.zero;
+    }
 }

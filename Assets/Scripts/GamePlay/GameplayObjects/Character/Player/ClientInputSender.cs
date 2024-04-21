@@ -8,32 +8,46 @@ public class ClientInputSender : NetworkBehaviour
     [SerializeField]
     ServerCharacter m_ServerCharacter;
 
-    public override void OnNetworkDespawn()
+    [SerializeField]
+    InputManager m_InputManager;
+
+    [SerializeField]
+    LayerMask groundLayerMask;
+    public override void OnNetworkSpawn()
     {
         if (!IsClient || !IsOwner)
         {
             enabled = false;
             return;
         }
+        m_InputManager.FireEvent += HandleFire;
     }
-
-    public override void OnNetworkSpawn()
+    public override void OnNetworkDespawn()
     {
-        base.OnNetworkSpawn();
+        if(m_ServerCharacter)
+        {
+            m_InputManager.FireEvent -= HandleFire;
+        }
     }
     private void Update()
     {
-        if(Input.GetMouseButton(0))
-        {
-            ActionRequestData actionRequestData = new ActionRequestData();
 
-            actionRequestData.ActionID = new ActionID();
-            SendInput(actionRequestData);
-        }
     }
 
     void SendInput(ActionRequestData action)
     {
         m_ServerCharacter.RecvDoActionServerRPC(action);
+    }
+    void HandleFire(bool state)
+    {
+        if(state)
+        {
+            //m_ServerCharacter.Aim(m_InputManager.AimPosition, groundLayerMask);
+            ActionRequestData actionRequestData = new ActionRequestData();
+
+            actionRequestData.ActionID = m_ServerCharacter.GetStartAction().ActionID;
+            actionRequestData.Direction = m_ServerCharacter.Aim(m_InputManager.AimPosition, groundLayerMask);
+            SendInput(actionRequestData);
+        }
     }
 }

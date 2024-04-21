@@ -32,6 +32,7 @@ public class ServerActionPlayer
         var newAction = ActionFactory.CreateActionFromData(ref actionData);
         m_Queue.Add(newAction);
         StartAction();
+
     }
     public void ClearActions(bool cancelNonBlocking)
     {
@@ -61,7 +62,14 @@ public class ServerActionPlayer
         //    m_HasPendingSynthesizedAction = false;
         //    PlayAction(ref m_PendingSynthesizedAction);
         //}
-        PlayAction(ref m_PendingSynthesizedAction);
+        //PlayAction(ref m_PendingSynthesizedAction);
+
+        if (m_Queue.Count != 0)
+        {
+            UpdateAction(m_Queue[0]);
+            m_Queue.RemoveAt(0);
+        }
+
     }
     private bool UpdateAction(Action action)
     {

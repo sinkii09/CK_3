@@ -15,11 +15,12 @@ public class LaunchProjectileAction : Action
         return true;
     }
 
-    public override bool OnUpdate(ServerCharacter clientCharacter)
+    public override bool OnUpdate(ServerCharacter serverCharacter)
     {
         if (!m_Launched)
         {
-            LaunchProjectile(clientCharacter);
+            serverCharacter.physicsWrapper.Transform.forward = Vector3.Lerp(serverCharacter.physicsWrapper.Transform.forward, Data.Direction, Time.deltaTime * 10);
+            LaunchProjectile(serverCharacter);
         }
         return true;
     }
@@ -33,11 +34,13 @@ public class LaunchProjectileAction : Action
     {
         if (!m_Launched)
         {
+
             m_Launched = true;
             var projectileInfo = GetProjectileInfo();
             NetworkObject networkObject = NetworkObjectPool.Singleton.GetNetworkObject(projectileInfo.Prefab, projectileInfo.Prefab.transform.position, projectileInfo.Prefab.transform.rotation);
             networkObject.transform.forward = parent.physicsWrapper.transform.forward;
             networkObject.transform.position = parent.physicsWrapper.Transform.localToWorldMatrix.MultiplyPoint(networkObject.transform.position);
+            networkObject.GetComponent<PhysicsProjectile>().Initialize(parent.NetworkObjectId, projectileInfo);
             networkObject.Spawn(true);
         }
     }

@@ -18,6 +18,6 @@ MonoBehaviour:
     - Prefab: {fileID: 8787849450496161361, guid: 5094fb4861952a7468cce45c0f1b9bd7,
         type: 3}
       Speed: 10
-      Range: 10
+      Range: 100
       Damage: 10
       MaxVictims: 1
