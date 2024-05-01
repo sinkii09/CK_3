@@ -11,7 +11,8 @@ public class LaunchProjectileAction : Action
     public override bool OnStart(ServerCharacter serverCharacter)
     {
         serverCharacter.physicsWrapper.Transform.forward = Data.Direction;
-
+        serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+        serverCharacter.clientCharacter.RecvDoActionClientRPC(Data);
         return true;
     }
 

@@ -2,7 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ActionRequestData : INetworkSerializable
+public struct ActionRequestData : INetworkSerializable
 {
     public ActionID ActionID;
     public Vector3 Position;

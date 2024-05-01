@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98d760ecd689eec4e91c1ab4a7efdcc9, type: 3}
+  m_Name: Acher_Avatar
+  m_EditorClassIdentifier: 
+  characterClass: {fileID: 11400000, guid: e1f3cd340338a524c8beb56bdf15df7f, type: 2}
+  Graphics: {fileID: 8535874032681481553, guid: 34cf22298d2ab09488876173be55ea37,
+    type: 3}
+  GraphicsCharacterSelect: {fileID: 0}
+  Potrait: {fileID: 0}

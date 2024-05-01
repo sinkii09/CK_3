@@ -7,6 +7,31 @@ public class GameDataSource : MonoBehaviour
     public static GameDataSource Instance { get; private set; }
 
     [SerializeField]
+    private CharacterClass[] m_CharacterData;
+
+    Dictionary<CharacterTypeEnum, CharacterClass> m_CharacterDataMap;
+
+    public Dictionary<CharacterTypeEnum, CharacterClass> CharacterDataByType
+    {
+        get 
+        {
+            if (m_CharacterDataMap == null)
+            {
+                m_CharacterDataMap = new Dictionary<CharacterTypeEnum, CharacterClass>();
+                foreach(CharacterClass data in m_CharacterData)
+                {
+                    if(m_CharacterDataMap.ContainsKey(data.CharacterType))
+                    {
+                        throw new System.Exception($"Duplicate character definition detected: {data.CharacterType}");
+                    }
+                    m_CharacterDataMap[data.CharacterType] = data;
+                }
+            }
+            return m_CharacterDataMap; 
+        }
+    }
+
+    [SerializeField]
     private Action[] m_ActionPrototypes;
 
     List<Action> m_AllActions;
@@ -27,6 +52,19 @@ public class GameDataSource : MonoBehaviour
     public Action GetActionPrototypeByID(ActionID index)
     {
         return m_AllActions[index.ID];
+    }
+    public bool TryGetActionPrototypeByID(ActionID index, out Action action)
+    {
+        for (int i = 0;i < m_AllActions.Count;i++)
+        {
+            if (m_AllActions[i].ActionID == index)
+            {
+                action = m_AllActions[i];
+                return true;
+            }
+        }
+        action = null;
+        return false;
     }
     private void BuildActionIDs()
     {

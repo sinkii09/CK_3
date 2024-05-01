@@ -41,7 +41,15 @@ public class InputManager : ScriptableObject,IPlayerActions
     {
         return _controller.Player.RightMouseClick.WasPressedThisFrame();
     }
-     public void OnMousePosition(InputAction.CallbackContext context)
+    public bool IsLeftMouseButtonDownThisFrame()
+    {
+        return _controller.Player.LeftMouseClick.WasPressedThisFrame();
+    }
+    public bool IsLeftMouseButtonUpThisFrame()
+    {
+        return _controller.Player.LeftMouseClick.WasReleasedThisFrame();
+    }
+    public void OnMousePosition(InputAction.CallbackContext context)
     {
         MousePosition = context.ReadValue<Vector2>();
     }

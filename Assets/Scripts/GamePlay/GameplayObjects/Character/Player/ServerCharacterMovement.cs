@@ -171,7 +171,6 @@ public class ServerCharacterMovement : NetworkBehaviour
         {
             var desiredMovementAmount = GetBaseMovementSpeed() * Time.fixedDeltaTime;
             movementVector = m_NavPath.MoveAlongPath(desiredMovementAmount);
-
             // If we didn't move stop moving.
             if (movementVector == Vector3.zero)
             {
@@ -195,10 +194,10 @@ public class ServerCharacterMovement : NetworkBehaviour
             return k_CheatSpeed;
         }
 #endif
-        //CharacterClass characterClass = GameDataSource.Instance.CharacterDataByType[m_CharLogic.CharacterType];
-        //Assert.IsNotNull(characterClass, $"No CharacterClass data for character type {m_CharLogic.CharacterType}");
-        //return characterClass.Speed;
-        return 10f;
+        CharacterClass characterClass = GameDataSource.Instance.CharacterDataByType[m_ServerCharacter.CharacterType];
+        Assert.IsNotNull(characterClass, $"No CharacterClass data for character type {m_ServerCharacter.CharacterType}");
+        return characterClass.Speed;
+
     }
     private MovementStatus GetMovementStatus(MovementState movementState)
     {

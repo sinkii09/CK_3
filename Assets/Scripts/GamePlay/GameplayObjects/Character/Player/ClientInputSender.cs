@@ -24,21 +24,53 @@ public class ClientInputSender : NetworkBehaviour
 
     float m_LastSentMove;
 
-    // Cache raycast hit array so that we can use non alloc raycasts
+    bool m_MoveRequest;
+
     readonly RaycastHit[] k_CachedHit = new RaycastHit[4];
 
+    RaycastHitComparer m_RaycastHitComparer;
+
+    public enum SkillTriggerStyle
+    {
+        None,      
+        MouseClick, 
+        Keyboard,  
+        KeyboardRelease, 
+        UI,          
+        UIRelease,   
+    }
+    bool IsReleaseStyle(SkillTriggerStyle style)
+    {
+        return style == SkillTriggerStyle.KeyboardRelease || style == SkillTriggerStyle.UIRelease;
+    }
+
+    struct ActionRequest
+    {
+        public SkillTriggerStyle TriggerStyle;
+        public ActionID RequestedActionID;
+        public ulong TargetId;
+    }
+    readonly ActionRequest[] m_ActionRequests = new ActionRequest[5];
+
+    int m_ActionRequestCount;
+
+    public ActionState baseAttack { get; private set; }
+    public ActionState actionState1 { get; private set; }
+    public ActionState actionState2 { get; private set; }
+    public ActionState actionState3 { get; private set; }
 
     LayerMask m_GroundLayerMask;
     LayerMask m_ActionLayerMask;
 
-    RaycastHitComparer m_RaycastHitComparer;
+    BaseActionInput m_CurrentSkillInput;
 
-    bool m_MoveRequest;
     #endregion
 
     #region Events
 
     public event Action<Vector3> ClientMoveEvent;
+
+    public event Action<ActionRequestData> ActionInputEvent;
 
     #endregion
 
@@ -48,6 +80,12 @@ public class ClientInputSender : NetworkBehaviour
 
     [SerializeField]
     InputManager m_InputManager;
+
+    [SerializeField]
+    PhysicsWrapper m_PhysicsWrapper;
+    private bool canDoAction;
+
+    CharacterClass CharacterClass => m_ServerCharacter.CharacterClass;
     #endregion
     public override void OnNetworkSpawn()
     {
@@ -56,23 +94,86 @@ public class ClientInputSender : NetworkBehaviour
             enabled = false;
             return;
         }
-        m_InputManager.FireEvent += HandleFire;
 
         m_GroundLayerMask = LayerMask.GetMask(new[] { "Ground" });
         m_ActionLayerMask = LayerMask.GetMask(new[] { "Player"," NPCs" , "Ground" });
+
+        if (CharacterClass.BaseAttack && GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.BaseAttack.ActionID, out var baseAttack))
+        {
+            this.baseAttack = new ActionState()
+            {
+                actionID = baseAttack.ActionID,
+                selectable = true,
+            };
+        }
+        if (CharacterClass.Skill1 &&
+            GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill1.ActionID, out var action1))
+        {
+            actionState1 = new ActionState() 
+            { 
+                actionID = action1.ActionID, 
+                selectable = true 
+            };
+        }
+        if (CharacterClass.Skill2 &&
+            GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill2.ActionID, out var action2))
+        {
+            actionState2 = new ActionState() 
+            { 
+                actionID = action2.ActionID, 
+                selectable = true 
+            };
+        }
+        if (CharacterClass.Skill3 &&
+            GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill3.ActionID, out var action3))
+        {
+            actionState3 = new ActionState() 
+            { 
+                actionID = action3.ActionID, 
+                selectable = true 
+            };
+        }
     }
     public override void OnNetworkDespawn()
     {
         if(m_ServerCharacter)
         {
-            m_InputManager.FireEvent -= HandleFire;
+
         }
     }
     private void Update()
     {
-        if(!EventSystem.current.IsPointerOverGameObject())
+        if(Input.GetKeyDown(KeyCode.Q))
         {
-            if(m_InputManager.IsRightMouseButtonDownThisFrame())
+            RequestAction(actionState1.actionID, SkillTriggerStyle.Keyboard);
+        }
+        else if(Input.GetKeyUp(KeyCode.Q))
+        {
+            RequestAction(actionState1.actionID, SkillTriggerStyle.KeyboardRelease);
+        }
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            RequestAction(actionState2.actionID, SkillTriggerStyle.Keyboard);
+        }
+        else if (Input.GetKeyUp(KeyCode.W))
+        {
+            RequestAction(actionState2.actionID, SkillTriggerStyle.KeyboardRelease);
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            RequestAction(actionState3.actionID, SkillTriggerStyle.Keyboard);
+        }
+        else if (Input.GetKeyUp(KeyCode.E))
+        {
+            RequestAction(actionState3.actionID, SkillTriggerStyle.KeyboardRelease);
+        }
+        if (!EventSystem.current.IsPointerOverGameObject() && m_CurrentSkillInput == null)
+        {
+            if(m_InputManager.IsLeftMouseButtonDownThisFrame())
+            {
+                RequestAction(CharacterClass.BaseAttack.ActionID, SkillTriggerStyle.MouseClick);
+            }
+            else if(m_InputManager.IsRightMouseButtonDownThisFrame())
             {
                 m_MoveRequest = true;
             }
@@ -80,7 +181,33 @@ public class ClientInputSender : NetworkBehaviour
     }
     private void FixedUpdate()
     {
-        if(EventSystem.current.currentSelectedGameObject != null)
+        for(int i = 0; i < m_ActionRequestCount; ++i)
+        {
+            if(m_CurrentSkillInput != null)
+            {
+                if (IsReleaseStyle(m_ActionRequests[i].TriggerStyle))
+                {
+                    m_CurrentSkillInput.OnReleaseKey();
+                }
+            }
+            else if (!IsReleaseStyle(m_ActionRequests[i].TriggerStyle))
+            {
+                var actionPrototype = GameDataSource.Instance.GetActionPrototypeByID(m_ActionRequests[i].RequestedActionID);
+                if(actionPrototype.Config.ActionInput!=null)
+                {
+                    var skillPlayer = Instantiate(actionPrototype.Config.ActionInput);
+                    skillPlayer.Initiate(m_ServerCharacter, m_PhysicsWrapper.transform.position, actionPrototype.ActionID, SendInput, FinishSkill);
+                    m_CurrentSkillInput = skillPlayer;
+                }
+                else
+                {
+                    PerformAction(actionPrototype.ActionID, m_ActionRequests[i].TriggerStyle, m_ActionRequests[i].TargetId);
+                }
+            }
+        }
+        m_ActionRequestCount = 0;
+
+        if (EventSystem.current.currentSelectedGameObject != null)
         {
             return;
         }
@@ -114,18 +241,89 @@ public class ClientInputSender : NetworkBehaviour
     }
     void SendInput(ActionRequestData action)
     {
+        ActionInputEvent?.Invoke(action);
         m_ServerCharacter.RecvDoActionServerRPC(action);
     }
-    void HandleFire(bool state)
+    void PerformAction(ActionID actionID, SkillTriggerStyle triggerStyle, ulong targetId = 0)
     {
-        if(state)
+        Transform hitTransform = null;
+        if(targetId != 0)
         {
-            //m_ServerCharacter.Aim(m_InputManager.AimPosition, groundLayerMask);
-            ActionRequestData actionRequestData = new ActionRequestData();
+            NetworkObject targetNetworkObject;
+            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(targetId, out targetNetworkObject))
+            {
+                hitTransform = targetNetworkObject.transform;
+            }
+        }
+        else
+        {
+            int numHits = 0;
+            var ray = Camera.main.ScreenPointToRay(m_InputManager.GetMouseScreenPosition());
+            numHits = Physics.RaycastNonAlloc(ray, k_CachedHit, k_MouseInputRaycastDistance, m_ActionLayerMask);
 
-            actionRequestData.ActionID = m_ServerCharacter.GetStartAction().ActionID;
-            actionRequestData.Direction = m_ServerCharacter.Aim(m_InputManager.GetMouseScreenPosition(), m_GroundLayerMask);
-            SendInput(actionRequestData);
+            int networkedHitIndex = -1;
+            for (int i = 0; i < numHits; i++)
+            {
+                if (k_CachedHit[i].transform.GetComponentInParent<NetworkObject>())
+                {
+                    networkedHitIndex = i;
+                    break;
+                }
+                hitTransform = networkedHitIndex >= 0 ? k_CachedHit[networkedHitIndex].transform : null;
+            }
+        }
+        var data = new ActionRequestData();
+        PopulateSkillRequest(k_CachedHit[0].point, actionID, ref data);
+        SendInput(data);
+    }
+    void PopulateSkillRequest(Vector3 hitPoint, ActionID actionID, ref ActionRequestData resultData)
+    {
+        resultData.ActionID = actionID;
+        var actionConfig = GameDataSource.Instance.GetActionPrototypeByID(actionID).Config;
+        resultData.ShouldClose = true;
+
+        Vector3 offset = hitPoint - m_PhysicsWrapper.Transform.position;
+        offset.y = 0;
+        Vector3 direction = offset.normalized;
+
+        switch (actionConfig.Logic)
+        {
+            case ActionLogic.LaunchProjectile:
+                resultData.Direction = direction;
+                resultData.ShouldClose = false;
+                resultData.CancelMovement = true;
+                return;
+            case ActionLogic.Melee:
+                resultData.Direction = direction;
+                return;
+        }
+    }
+    
+    public void RequestAction(ActionID actionID, SkillTriggerStyle triggerStyle, ulong targetID = 0)
+    {
+        if(m_ActionRequestCount < m_ActionRequests.Length)
+        {
+            m_ActionRequests[m_ActionRequestCount].RequestedActionID = actionID;
+            m_ActionRequests[m_ActionRequestCount].TriggerStyle = triggerStyle;
+            m_ActionRequests[m_ActionRequestCount].TargetId = targetID;
+            m_ActionRequestCount++;
+        }
+    }
+    
+    void FinishSkill()
+    {
+        m_CurrentSkillInput = null;
+    }
+    public class ActionState
+    {
+        public ActionID actionID { get; internal set; }
+
+        public bool selectable { get; internal set; }
+
+        internal void SetActionState(ActionID newActionID, bool isSelectable = true)
+        {
+            actionID = newActionID;
+            selectable = isSelectable;
         }
     }
 }

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6be2ed5baf5d4324eaaa4acef8e603e0, type: 3}
+  m_Name: Archer AOE Action
+  m_EditorClassIdentifier: 
+  Config:
+    Logic: 3
+    Amount: 0
+    ManaCost: 0
+    Range: 20
+    DurationSeconds: 0
+    ExecTimeSeconds: 0
+    AnimAnticipation: AnticipateMove
+    Anim: Skill1
+    Anim2: 
+    ReactAnim: 
+    Radius: 4
+    ActionInput: {fileID: 1638009621977115915, guid: fe436d0d50d485a4195893444a6b1229,
+      type: 3}
+    ActionInterruptible: 1
+    Projectiles: []
+    Spawns:
+    - {fileID: 938700633922792038, guid: e663036ac1244b64ab7297ac6b6dc365, type: 3}

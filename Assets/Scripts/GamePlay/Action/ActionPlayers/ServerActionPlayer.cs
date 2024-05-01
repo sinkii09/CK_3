@@ -42,6 +42,11 @@ public class ServerActionPlayer
     {
         m_Queue[0].TimeStarted = Time.time;
         bool play = m_Queue[0].OnStart(m_ServerCharacter);
+
+        if (m_Queue[0].Config.ActionInterruptible)
+        {
+            m_Movement.CancelMove();
+        }
     }
     private void TryReturnAction(Action action)
     {

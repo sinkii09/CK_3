@@ -20,6 +20,7 @@ public abstract class Action : ScriptableObject
 
     public ActionConfig Config;
 
+
     public void Initialize(ref ActionRequestData data)
     {
         m_Data = data;
@@ -33,7 +34,7 @@ public abstract class Action : ScriptableObject
     }
 
     public abstract bool OnStart(ServerCharacter serverCharacter);
-    public abstract bool OnUpdate(ServerCharacter clientCharacter);
+    public abstract bool OnUpdate(ServerCharacter serverCharacter);
     public virtual void End(ServerCharacter serverCharacter)
     {
         Cancel(serverCharacter);
@@ -70,18 +71,51 @@ public abstract class Action : ScriptableObject
 
     public virtual bool OnStartClient(ClientCharacter clientCharacter)
     {
-        AnticipatedClient = false; //once you start for real you are no longer an anticipated action.
-        TimeStarted = UnityEngine.Time.time;
+        AnticipatedClient = false; 
+        TimeStarted = Time.time;
         return true;
     }
 
-    //public virtual bool OnUpdateClient(ClientCharacter clientCharacter)
-    //{
-    //    return ActionConclusion.Continue;
-    //}
+    public virtual bool OnUpdateClient(ClientCharacter clientCharacter)
+    {
+        return ActionConclusion.Continue;
+    }
     public virtual void EndClient(ClientCharacter clientCharacter)
     {
         CancelClient(clientCharacter);
     }
     public virtual void CancelClient(ClientCharacter clientCharacter) { }
+
+    public virtual void OnAnimEventClient(ClientCharacter clientCharacter, string id) { }
+    public virtual void OnStoppedChargingUpClient(ClientCharacter clientCharacter, float finalChargeUpPercentage) { }
+    protected List<SpecialFXGraphic> InstantiateSpecialFXGraphics(Transform origin, bool parentToOrigin)
+    {
+        var returnList = new List<SpecialFXGraphic>();
+        foreach (var prefab in Config.Spawns)
+        {
+            if (!prefab) { continue; } // skip blank entries in our prefab list
+            returnList.Add(InstantiateSpecialFXGraphic(prefab, origin, parentToOrigin));
+        }
+        return returnList;
+    }
+    protected SpecialFXGraphic InstantiateSpecialFXGraphic(GameObject prefab, Transform origin, bool parentToOrigin)
+    {
+        if (prefab.GetComponent<SpecialFXGraphic>() == null)
+        {
+            throw new System.Exception($"One of the Spawns on action {this.name} does not have a SpecialFXGraphic component and can't be instantiated!");
+        }
+        var graphicsGO = GameObject.Instantiate(prefab, origin.transform.position, origin.transform.rotation, (parentToOrigin ? origin.transform : null));
+        return graphicsGO.GetComponent<SpecialFXGraphic>();
+    }
+    public virtual void AnticipateActionClient(ClientCharacter clientCharacter) 
+    {
+        AnticipatedClient = true;
+        TimeStarted = Time.time;
+
+        if(!string.IsNullOrEmpty(Config.AnimAnticipation))
+        {
+            clientCharacter.OurAnimator.SetTrigger(Config.AnimAnticipation);
+        }
+        
+    }  
 }

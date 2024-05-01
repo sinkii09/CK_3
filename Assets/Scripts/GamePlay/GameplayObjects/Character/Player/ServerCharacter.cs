@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.CK.GamePlay.GameplayObjects;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -19,10 +20,41 @@ public class ServerCharacter : NetworkBehaviour
 
     public ServerCharacterMovement Movement => m_Movement;
 
+
+    public NetworkLifeState NetLifeState { get; private set; }
+
+    public LifeState LifeState
+    {
+        get => NetLifeState.LifeState.Value;
+        private set => NetLifeState.LifeState.Value = value;
+    }
+
+    [SerializeField]
+    CharacterClass m_CharacterClass;
+
+    public CharacterClass CharacterClass
+    {
+        get 
+        { 
+            if (m_CharacterClass == null)
+            {
+                m_CharacterClass = m_State.RegisteredAvatar.characterClass;
+            }
+            return m_CharacterClass; 
+        }
+        set { m_CharacterClass = value; }
+    }
+    public CharacterTypeEnum CharacterType => CharacterClass.CharacterType;
+    
     [SerializeField]
     PhysicsWrapper m_PhysicsWrapper;
 
     public PhysicsWrapper physicsWrapper => m_PhysicsWrapper;
+
+    [SerializeField]
+    ServerAnimationHandler m_ServerAnimationHandler;
+
+    public ServerAnimationHandler serverAnimationHandler => m_ServerAnimationHandler;
 
     public NetworkVariable<ulong> HeldNetworkObject { get; } = new NetworkVariable<ulong>();
 
@@ -33,13 +65,22 @@ public class ServerCharacter : NetworkBehaviour
 
     [SerializeField] private Action m_StartingAction;
 
+    public bool IsNpc => CharacterClass.IsNpc;
+
+    NetworkAvatarGuidState m_State;
+
     private void Awake()
     {
         m_ServerActionPlayer = new ServerActionPlayer(this);
+        m_State = GetComponent<NetworkAvatarGuidState>();
+        NetLifeState = GetComponent<NetworkLifeState>();
     }
     public override void OnNetworkSpawn()
     {
-        if (!IsServer) { enabled = false; }
+        if (!IsServer) 
+        {
+            enabled = false;     
+        }
         else
         {
             if (m_StartingAction != null)
@@ -68,7 +109,10 @@ public class ServerCharacter : NetworkBehaviour
     public void RecvDoActionServerRPC(ActionRequestData data)
     {
         ActionRequestData data1 = data;
-        ActionPlayer.OnGameplayActivity(Action.GameplayActivity.UsingAttackAction);
+        if (!GameDataSource.Instance.GetActionPrototypeByID(data1.ActionID).Config.IsFriendly)
+        {
+            ActionPlayer.OnGameplayActivity(Action.GameplayActivity.UsingAttackAction);
+        }
         PlayAction(ref data1);
     }
     [ServerRpc]
