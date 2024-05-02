@@ -70,7 +70,6 @@ public partial class ChargedLaunchProjectileAction : LaunchProjectileAction
     }
     private void StopChargingUp(ServerCharacter parent)
     {
-        Debug.Log(m_StoppedChargingUpTime);
         if (m_StoppedChargingUpTime == 0)
         {
             m_StoppedChargingUpTime = Time.time;
@@ -79,7 +78,6 @@ public partial class ChargedLaunchProjectileAction : LaunchProjectileAction
             {
                 parent.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
             }
-            Debug.Log("ChargedShotEnd");
             parent.clientCharacter.RecvStopChargingUpClientRpc(GetPercentChargedUp());
             if (!m_HitByAttack)
             {

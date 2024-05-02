@@ -1291,7 +1291,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -1689,8 +1689,8 @@ ModelImporter:
       name: 2H_Ranged_Shoot
       takeName: 2H_Ranged_Shoot
       internalID: 7083891485487361019
-      firstFrame: 10
-      lastFrame: 32
+      firstFrame: 8
+      lastFrame: 25
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

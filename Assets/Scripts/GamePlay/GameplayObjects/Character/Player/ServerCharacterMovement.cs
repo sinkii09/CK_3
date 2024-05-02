@@ -99,6 +99,10 @@ public class ServerCharacterMovement : NetworkBehaviour
         m_MovementState = MovementState.PathFollowing;
         m_NavPath.FollowTransform(followTransform);
     }
+    public bool IsPerformingForcedMovement()
+    {
+        return m_MovementState == MovementState.Knockback || m_MovementState == MovementState.Charging;
+    }
     public bool IsMoving()
     {
         return m_MovementState != MovementState.Idle;

@@ -44,6 +44,20 @@ public struct ActionRequestData : INetworkSerializable
 
         return flags;
     }
+    public bool Compare(ref ActionRequestData rhs)
+    {
+        bool scalarParamsEqual = (ActionID, Position, Direction, Amount) == (rhs.ActionID, rhs.Position, rhs.Direction, rhs.Amount);
+        if (!scalarParamsEqual) { return false; }
+
+        if (TargetIds == rhs.TargetIds) { return true; } //covers case of both being null.
+        if (TargetIds == null || rhs.TargetIds == null || TargetIds.Length != rhs.TargetIds.Length) { return false; }
+        for (int i = 0; i < TargetIds.Length; i++)
+        {
+            if (TargetIds[i] != rhs.TargetIds[i]) { return false; }
+        }
+
+        return true;
+    }
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         PackFlags flags = PackFlags.None;

@@ -370,6 +370,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterData:
   - {fileID: 11400000, guid: e1f3cd340338a524c8beb56bdf15df7f, type: 2}
+  m_GeneralChaseActionPrototype: {fileID: 11400000, guid: 8241302113943ee47b561021d0f50750,
+    type: 2}
+  m_GeneralTargetActionPrototype: {fileID: 11400000, guid: 71b20fb464a82d144a84f42527985ca7,
+    type: 2}
   m_ActionPrototypes:
   - {fileID: 11400000, guid: 63bfe59f8351deb4dac9b0cf122586cb, type: 2}
   - {fileID: 11400000, guid: 9e564af506b50d748a2dab1e1d1d90b8, type: 2}

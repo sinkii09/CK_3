@@ -12,6 +12,7 @@ public enum ActionLogic
     AoE,
     Target,
     ChargedLaunchProjectile,
+    Chase,
 }
 
 
@@ -30,6 +31,10 @@ public class ActionConfig
 
     public float ExecTimeSeconds;
 
+    public float EffectDurationSeconds;
+
+    public float ReuseTimeSeconds;
+
     public string AnimAnticipation;
 
     public string Anim;
@@ -44,9 +49,26 @@ public class ActionConfig
 
     public bool ActionInterruptible;
 
+    public List<Action> IsInterruptableBy;
+
+    public BlockingModeType BlockingMode;
+
     public ProjectileInfo[] Projectiles;
 
     public GameObject[] Spawns;
 
     public bool IsFriendly;
+
+    public bool CanBeInterruptedBy(ActionID actionActionID)
+    {
+        foreach (var action in IsInterruptableBy)
+        {
+            if (action.ActionID == actionActionID)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

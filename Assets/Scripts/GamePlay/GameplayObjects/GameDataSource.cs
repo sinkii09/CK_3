@@ -31,6 +31,14 @@ public class GameDataSource : MonoBehaviour
         }
     }
 
+    [Header("Common action prototypes")]
+    [SerializeField]
+    Action m_GeneralChaseActionPrototype;
+    [SerializeField]
+    Action m_GeneralTargetActionPrototype;
+    public Action GeneralChaseActionPrototype => m_GeneralChaseActionPrototype;
+    public Action GeneralTargetActionPrototype => m_GeneralTargetActionPrototype;
+
     [SerializeField]
     private Action[] m_ActionPrototypes;
 

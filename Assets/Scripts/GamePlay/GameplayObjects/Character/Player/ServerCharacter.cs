@@ -103,7 +103,18 @@ public class ServerCharacter : NetworkBehaviour
     [ServerRpc]
     public void SendCharacterInputServerRpc(Vector3 movementTarget)
     {
-        m_Movement.SetMovementTarget(movementTarget);
+        if (LifeState == LifeState.Alive && !m_Movement.IsPerformingForcedMovement())
+        {
+            if (m_ServerActionPlayer.GetActiveActionInfo(out ActionRequestData data))
+            {
+                if (GameDataSource.Instance.GetActionPrototypeByID(data.ActionID).Config.ActionInterruptible)
+                {
+                    m_ServerActionPlayer.ClearActions(false);
+                }
+            }
+            m_ServerActionPlayer.CancelRunningActionsByLogic(ActionLogic.Target, true);
+            m_Movement.SetMovementTarget(movementTarget);
+        }
     }
     [ServerRpc]
     public void RecvDoActionServerRPC(ActionRequestData data)

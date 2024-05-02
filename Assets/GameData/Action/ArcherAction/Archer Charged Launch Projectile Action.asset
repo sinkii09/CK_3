@@ -19,6 +19,8 @@ MonoBehaviour:
     Range: 20
     DurationSeconds: 1.1
     ExecTimeSeconds: 1
+    EffectDurationSeconds: 0
+    ReuseTimeSeconds: 0
     AnimAnticipation: AnticipateMove
     Anim: ChargedShotStart
     Anim2: ChargedShotEnd
@@ -27,20 +29,22 @@ MonoBehaviour:
     ActionInput: {fileID: 3162615933874976823, guid: 6fc0b3b490ac11c4bac2d990c6929b95,
       type: 3}
     ActionInterruptible: 1
+    IsInterruptableBy: []
+    BlockingMode: 0
     Projectiles:
-    - Prefab: {fileID: 919132149155446097, guid: eb73212efbdc7b44baefff0278b0e1d5,
+    - Prefab: {fileID: 8787849450496161361, guid: 5094fb4861952a7468cce45c0f1b9bd7,
         type: 3}
       Speed: 10
       Range: 20
       Damage: 10
       MaxVictims: 1
-    - Prefab: {fileID: 919132149155446097, guid: eb73212efbdc7b44baefff0278b0e1d5,
+    - Prefab: {fileID: 8787849450496161361, guid: 5094fb4861952a7468cce45c0f1b9bd7,
         type: 3}
       Speed: 12
       Range: 30
       Damage: 20
       MaxVictims: 3
-    - Prefab: {fileID: 919132149155446097, guid: eb73212efbdc7b44baefff0278b0e1d5,
+    - Prefab: {fileID: 8787849450496161361, guid: 5094fb4861952a7468cce45c0f1b9bd7,
         type: 3}
       Speed: 15
       Range: 40

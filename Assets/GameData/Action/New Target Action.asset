@@ -9,20 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 561ccf5b6c6fe5041a881625c0594a08, type: 3}
-  m_Name: ArcherBaseAttack
+  m_Script: {fileID: 11500000, guid: 27870473f4b3ffd439970be0e179e9a3, type: 3}
+  m_Name: New Target Action
   m_EditorClassIdentifier: 
   Config:
-    Logic: 2
+    Logic: 4
     Amount: 0
     ManaCost: 0
-    Range: 20
-    DurationSeconds: 0.55
-    ExecTimeSeconds: 0.15
+    Range: 0
+    DurationSeconds: 0
+    ExecTimeSeconds: 0
     EffectDurationSeconds: 0
     ReuseTimeSeconds: 0
-    AnimAnticipation: AnticipateMove
-    Anim: BaseAttack
+    AnimAnticipation: 
+    Anim: 
     Anim2: 
     ReactAnim: 
     Radius: 0
@@ -30,12 +30,6 @@ MonoBehaviour:
     ActionInterruptible: 0
     IsInterruptableBy: []
     BlockingMode: 0
-    Projectiles:
-    - Prefab: {fileID: 8787849450496161361, guid: 5094fb4861952a7468cce45c0f1b9bd7,
-        type: 3}
-      Speed: 20
-      Range: 100
-      Damage: 10
-      MaxVictims: 1
+    Projectiles: []
     Spawns: []
     IsFriendly: 0

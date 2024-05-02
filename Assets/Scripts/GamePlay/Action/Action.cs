@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public enum BlockingModeType
+{
+    EntireDuration,
+    OnlyDuringExecTime,
+}
 public abstract class Action : ScriptableObject
 {
     [NonSerialized]
@@ -58,6 +64,17 @@ public abstract class Action : ScriptableObject
         ChanceToStunTramplers,  // unbuffed value is 0. If > 0, is the chance that someone trampling this character becomes stunned
     }
     public virtual void BuffValue(BuffableValue buffType, ref float buffedValue) { }
+
+    public static float GetUnbuffedValue(Action.BuffableValue buffType)
+    {
+        switch (buffType)
+        {
+            case BuffableValue.PercentDamageReceived: return 1;
+            case BuffableValue.PercentHealingReceived: return 1;
+            case BuffableValue.ChanceToStunTramplers: return 0;
+            default: throw new System.Exception($"Unknown buff type {buffType}");
+        }
+    }
     public enum GameplayActivity
     {
         AttackedByEnemy,

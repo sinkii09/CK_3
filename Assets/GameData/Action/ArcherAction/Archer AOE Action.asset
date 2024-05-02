@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Config:
     Logic: 3
-    Amount: 0
+    Amount: 20
     ManaCost: 0
     Range: 20
-    DurationSeconds: 0
-    ExecTimeSeconds: 0
+    DurationSeconds: 2
+    ExecTimeSeconds: 1
     AnimAnticipation: AnticipateMove
     Anim: Skill1
     Anim2: 
@@ -27,6 +27,9 @@ MonoBehaviour:
     ActionInput: {fileID: 1638009621977115915, guid: fe436d0d50d485a4195893444a6b1229,
       type: 3}
     ActionInterruptible: 1
+    IsInterruptableBy: []
+    BlockingMode: 0
     Projectiles: []
     Spawns:
     - {fileID: 938700633922792038, guid: e663036ac1244b64ab7297ac6b6dc365, type: 3}
+    IsFriendly: 0
