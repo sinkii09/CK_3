@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6358764c1c426474ca4e3a16ebc8941c, type: 3}
+  m_Name: Skeleton_Minion
+  m_EditorClassIdentifier: 
+  CharacterType: 4
+  BaseAttack: {fileID: 11400000, guid: 8e30654f49d4e9248bd3602c830b4299, type: 2}
+  Skill1: {fileID: 0}
+  Skill2: {fileID: 0}
+  Skill3: {fileID: 0}
+  BaseHP: 100
+  BaseMana: 0
+  Speed: 3
+  IsNpc: 1
+  DetectRange: 10
+  DisplayedName: 

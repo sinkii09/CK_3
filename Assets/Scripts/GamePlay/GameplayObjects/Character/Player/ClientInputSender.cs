@@ -296,6 +296,13 @@ public class ClientInputSender : NetworkBehaviour
             case ActionLogic.Melee:
                 resultData.Direction = direction;
                 return;
+            case ActionLogic.Dash:
+                resultData.Position = hitPoint;
+                resultData.CancelMovement = true;
+                return;
+            case ActionLogic.Target:
+                resultData.ShouldClose = false;
+                return;
         }
     }
     

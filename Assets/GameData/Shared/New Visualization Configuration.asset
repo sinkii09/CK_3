@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba892e334415d394d9e442952583ed27, type: 3}
   m_Name: New Visualization Configuration
   m_EditorClassIdentifier: 
+  m_AliveStateTrigger: StandUp
+  m_FaintedStateTrigger: FallDown
+  m_DeadStateTrigger: Dead
   m_AnticipateMoveTrigger: AnticipateMove
   m_SpeedVariable: Speed
   m_BaseNodeTag: BaseNode
@@ -20,6 +23,13 @@ MonoBehaviour:
   SpeedNormal: 1
   SpeedHasted: 1.5
   SpeedSlowed: 2
-  AnticipateMoveTriggerID: 0
-  SpeedVariableID: 0
-  BaseNodeTagID: 0
+  TargetReticule: {fileID: 3172553997432922081, guid: 60594ca6411e210468d12de0fab75db4,
+    type: 3}
+  ReticuleFriendlyMat: {fileID: 2100000, guid: e04e5232283792c43a34633c38e64d4a, type: 2}
+  ReticuleHostileMat: {fileID: 2100000, guid: 1be23acb7a0fe9644bacbca47bee483b, type: 2}
+  AliveStateTriggerID: -1201797473
+  FaintedStateTriggerID: 426567206
+  DeadStateTriggerID: 1293411866
+  AnticipateMoveTriggerID: 291833189
+  SpeedVariableID: -823668238
+  BaseNodeTagID: -80330083

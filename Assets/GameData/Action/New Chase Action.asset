@@ -27,9 +27,9 @@ MonoBehaviour:
     ReactAnim: 
     Radius: 0
     ActionInput: {fileID: 0}
-    ActionInterruptible: 0
+    ActionInterruptible: 1
     IsInterruptableBy: []
     BlockingMode: 0
     Projectiles: []
     Spawns: []
-    IsFriendly: 0
+    IsFriendly: 1

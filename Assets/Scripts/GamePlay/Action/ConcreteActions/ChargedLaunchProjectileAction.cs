@@ -22,7 +22,7 @@ public partial class ChargedLaunchProjectileAction : LaunchProjectileAction
             }
         }
 
-        serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+        serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
         serverCharacter.clientCharacter.RecvDoActionClientRPC(Data);
         return true;
     }
@@ -76,7 +76,7 @@ public partial class ChargedLaunchProjectileAction : LaunchProjectileAction
 
             if (!string.IsNullOrEmpty(Config.Anim2))
             {
-                parent.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
+                parent.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
             }
             parent.clientCharacter.RecvStopChargingUpClientRpc(GetPercentChargedUp());
             if (!m_HitByAttack)

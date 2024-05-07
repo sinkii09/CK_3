@@ -11,7 +11,7 @@ public class LaunchProjectileAction : Action
     public override bool OnStart(ServerCharacter serverCharacter)
     {
         serverCharacter.physicsWrapper.Transform.forward = Data.Direction;
-        serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+        serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
         serverCharacter.clientCharacter.RecvDoActionClientRPC(Data);
         return true;
     }
@@ -57,5 +57,17 @@ public class LaunchProjectileAction : Action
     public override void End(ServerCharacter serverCharacter)
     {
         LaunchProjectile(serverCharacter);
+    }
+    public override void Cancel(ServerCharacter serverCharacter)
+    {
+        if (!string.IsNullOrEmpty(Config.Anim2))
+        {
+            serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
+        }
+    }
+
+    public override bool OnUpdateClient(ClientCharacter clientCharacter)
+    {
+        return ActionConclusion.Continue;
     }
 }

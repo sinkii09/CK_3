@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4498091548171311159}
   - component: {fileID: -8495612632005318941}
   - component: {fileID: -2284694800914831997}
+  - component: {fileID: -6508222022479512409}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -78,9 +79,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ClientCharacter: {fileID: 0}
   m_Movement: {fileID: 768080270561026622}
-  m_CharacterClass: {fileID: 0}
   m_PhysicsWrapper: {fileID: 4472268218325407675}
-  m_ServerAnimationHandler: {fileID: 0}
+  m_ServerAnimationHandler: {fileID: 4498091548171311159}
+  m_DamageReceiver: {fileID: -8495612632005318941}
+  m_CharacterClass: {fileID: 0}
+  m_BrainEnabled: 1
+  m_KilledDestroyDelaySeconds: 3
   m_StartingAction: {fileID: 0}
 --- !u!114 &768080270561026622
 MonoBehaviour:
@@ -142,7 +146,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2106232342769059349}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -242,6 +246,7 @@ MonoBehaviour:
   m_NetworkAnimator: {fileID: 0}
   m_VisualizationConfiguration: {fileID: 11400000, guid: 34db75c71946cbb439dad528ed3faf2d,
     type: 2}
+  m_NetworkLifeState: {fileID: -2284694800914831997}
 --- !u!114 &-8495612632005318941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,4 +273,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LifeState:
+    m_InternalValue: 0
+--- !u!114 &-6508222022479512409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2106232342769059349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4e40f49d01df3e4483d7ab09b0d984f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HitPoints:
     m_InternalValue: 0

@@ -17,7 +17,7 @@ public class AOEAction : Action
             return ActionConclusion.Stop;
         }
         Data.TargetIds = new ulong[0];
-        serverCharacter.serverAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
+        serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
         serverCharacter.clientCharacter.RecvDoActionClientRPC(Data);
         return ActionConclusion.Continue;
     }
@@ -44,10 +44,10 @@ public class AOEAction : Action
     
         for(var i = 0; i < colliders.Length; i++)
         {
-            var enemy = colliders[i].GetComponent<ServerCharacter>();
+            var enemy = colliders[i].GetComponent<IDamageable>();
             if(enemy != null)
             {
-
+                enemy.ReceiveHP(parent, -Config.Amount);
             }
         }
     }

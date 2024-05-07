@@ -29,7 +29,7 @@ MonoBehaviour:
     ActionInput: {fileID: 0}
     ActionInterruptible: 0
     IsInterruptableBy: []
-    BlockingMode: 0
+    BlockingMode: 1
     Projectiles: []
     Spawns: []
-    IsFriendly: 0
+    IsFriendly: 1

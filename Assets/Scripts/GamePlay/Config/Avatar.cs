@@ -7,7 +7,7 @@ namespace Unity.CK.GamePlay.Configuration
 {
     [CreateAssetMenu]
     [Serializable]
-    public sealed class Avatar : ScriptableObject
+    public sealed class Avatar : GuidScriptableObject
     {
         public CharacterClass characterClass;
 

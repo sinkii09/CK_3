@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class ClientCharacter : NetworkBehaviour
 {
+    const float k_LerpTime = 0.08f;
+
     #region References
     [SerializeField]
     Animator m_ClientVisualsAnimator;
@@ -19,11 +21,23 @@ public class ClientCharacter : NetworkBehaviour
     public ServerCharacter serverCharacter => m_ServerCharacter;
 
     ClientActionPlayer m_ClientActionPlayer;
+
+    public GameObject TargetReticulePrefab => m_VisualizationConfiguration.TargetReticule;
+    public Material ReticuleHostileMat => m_VisualizationConfiguration.ReticuleHostileMat;
+    public Material ReticuleFriendlyMat => m_VisualizationConfiguration.ReticuleFriendlyMat;
     #endregion
 
     #region Variables
 
     float m_CurrentSpeed;
+
+    PositionLerper m_PositionLerper;
+
+    RotationLerper m_RotationLerper;
+
+    Vector3 m_LerpedPosition;
+
+    Quaternion m_LerpedRotation;
     #endregion
 
     #region ClientRPC
@@ -63,7 +77,11 @@ public class ClientCharacter : NetworkBehaviour
     {
         if(IsHost)
         {
-
+            m_LerpedPosition = m_PositionLerper.LerpPosition(m_LerpedPosition,
+                    serverCharacter.physicsWrapper.Transform.position);
+            m_LerpedRotation = m_RotationLerper.LerpRotation(m_LerpedRotation,
+                serverCharacter.physicsWrapper.Transform.rotation);
+            transform.SetPositionAndRotation(m_LerpedPosition, m_LerpedRotation);
         }
         if(m_ClientVisualsAnimator)
         {
@@ -95,7 +113,12 @@ public class ClientCharacter : NetworkBehaviour
         transform.SetPositionAndRotation(serverCharacter.physicsWrapper.Transform.position,
                                          serverCharacter.physicsWrapper.Transform.rotation);
 
-        if (!m_ServerCharacter.IsNpc)
+        m_LerpedPosition = transform.position;
+        m_LerpedRotation = transform.rotation;
+
+        m_PositionLerper = new PositionLerper(serverCharacter.physicsWrapper.Transform.position, k_LerpTime);
+        m_RotationLerper = new RotationLerper(serverCharacter.physicsWrapper.Transform.rotation, k_LerpTime);
+        if (!m_ServerCharacter.IsNPC)
         {
             name = "AvatarGraphics" + m_ServerCharacter.OwnerClientId;
             if (m_ServerCharacter.TryGetComponent(out ClientAvatarGuidHandler clientAvatarGuidHandler))
@@ -104,6 +127,8 @@ public class ClientCharacter : NetworkBehaviour
             }
             if (m_ServerCharacter.IsOwner)
             {
+                ActionRequestData data = new ActionRequestData { ActionID = GameDataSource.Instance.GeneralTargetActionPrototype.ActionID };
+                m_ClientActionPlayer.PlayAction(ref data);
                 if (m_ServerCharacter.TryGetComponent(out ClientInputSender inputSender))
                 {
                     // anticipated actions will only be played on non-host, owning clients
@@ -134,6 +159,7 @@ public class ClientCharacter : NetworkBehaviour
     }
 
     #endregion
+
     private void OnMoveInput(Vector3 vector)
     {
         if (!IsAnimating())

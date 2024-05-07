@@ -13,6 +13,7 @@ public enum ActionLogic
     Target,
     ChargedLaunchProjectile,
     Chase,
+    Dash,
 }
 
 
@@ -42,6 +43,8 @@ public class ActionConfig
     public string Anim2;
 
     public string ReactAnim;
+
+    public string OtherAnimatorVariable;
 
     public float Radius;
 

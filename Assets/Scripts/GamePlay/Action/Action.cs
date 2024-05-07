@@ -26,7 +26,11 @@ public abstract class Action : ScriptableObject
 
     public ActionConfig Config;
 
+    public bool IsChaseAction => ActionID == GameDataSource.Instance.GeneralChaseActionPrototype.ActionID;
 
+    public bool IsStunAction => ActionID == GameDataSource.Instance.StunnedActionPrototype.ActionID;
+
+    public bool IsGeneralTargetAction => ActionID == GameDataSource.Instance.GeneralTargetActionPrototype.ActionID;
     public void Initialize(ref ActionRequestData data)
     {
         m_Data = data;
@@ -51,7 +55,7 @@ public abstract class Action : ScriptableObject
     }
     public virtual bool ShouldBecomeNonBlocking()
     {
-        return true;
+        return Config.BlockingMode == BlockingModeType.OnlyDuringExecTime ? TimeRunning >= Config.ExecTimeSeconds : false;
     }
     public virtual bool ChainIntoNewAction(ref ActionRequestData newAction) { return false; }
     

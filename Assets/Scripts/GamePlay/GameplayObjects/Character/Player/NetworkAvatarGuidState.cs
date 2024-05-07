@@ -1,12 +1,17 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using Avatar = Unity.CK.GamePlay.Configuration.Avatar;
 using Unity.CK.GamePlay.Configuration;
+using UnityEngine.Serialization;
 
 public class NetworkAvatarGuidState : NetworkBehaviour
 {
+    [FormerlySerializedAs("AvatarGuidArray")]
+    [HideInInspector]
+    public NetworkVariable<NetworkGuid> AvatarGuid = new NetworkVariable<NetworkGuid>();
+
     [SerializeField]
     AvatarRegistry m_AvatarRegistry;
 
@@ -18,27 +23,44 @@ public class NetworkAvatarGuidState : NetworkBehaviour
         {
             if (m_Avatar == null)
             {
-                RegisterAvatar();
+                RegisterAvatar(AvatarGuid.Value.ToGuid());
             }
-                return m_Avatar;
+
+            return m_Avatar;
         }
     }
 
     public void SetRandomAvatar()
     {
-        m_Avatar = m_AvatarRegistry.GetRandomAvatar();
+        AvatarGuid.Value = m_AvatarRegistry.GetRandomAvatar().Guid.ToNetworkGuid();
     }
 
-    void RegisterAvatar()
+    void RegisterAvatar(Guid guid)
     {
-        //if (m_Avatar != null)
+        //if (guid.Equals(Guid.Empty))
         //{
+            
         //    return;
         //}
         SetRandomAvatar();
+        // based on the Guid received, Avatar is fetched from AvatarRegistry
+        if (!m_AvatarRegistry.TryGetAvatar(AvatarGuid.Value.ToGuid(), out var avatar))
+        {
+            Debug.LogError("Avatar not found!");
+            return;
+        }
+
+        if (m_Avatar != null)
+        {
+            // already set, this is an idempotent call, we don't want to Instantiate twice
+            return;
+        }
+
+        m_Avatar = avatar;
+
         if (TryGetComponent<ServerCharacter>(out var serverCharacter))
         {
-            serverCharacter.CharacterClass = m_Avatar.characterClass;
+            serverCharacter.CharacterClass = avatar.characterClass;
         }
     }
 }

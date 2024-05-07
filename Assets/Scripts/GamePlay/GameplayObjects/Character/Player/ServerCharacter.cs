@@ -6,75 +6,118 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 
-public class ServerCharacter : NetworkBehaviour
+public class ServerCharacter : NetworkBehaviour, ITargetable
 {
+    #region References
+    [Header("Client Handler")]
     [FormerlySerializedAs("m_ClientVisualization")]
     [SerializeField] ClientCharacter m_ClientCharacter;
-
     public ClientCharacter clientCharacter => m_ClientCharacter;
 
-    public NetworkVariable<MovementStatus> MovementStatus { get; } = new NetworkVariable<MovementStatus>();
-
+    [Header("Movement Handler")]
     [SerializeField]
     ServerCharacterMovement m_Movement;
-
     public ServerCharacterMovement Movement => m_Movement;
 
+    [Header("Physics Handler")]
+    [SerializeField]
+    PhysicsWrapper m_PhysicsWrapper;
+    public PhysicsWrapper physicsWrapper => m_PhysicsWrapper;
 
+    [Header("Animation Handler")]
+    [SerializeField]
+    ServerAnimationHandler m_ServerAnimationHandler;
+    public ServerAnimationHandler ServerAnimationHandler => m_ServerAnimationHandler;
+
+    [Header("Damage Handler")]
+    [SerializeField]
+    DamageReceiver m_DamageReceiver;
+
+    [Header("Class Handler (AutoSet)")]
+    [SerializeField]
+    CharacterClass m_CharacterClass;
+    public CharacterClass CharacterClass
+    {
+        get
+        {
+            if (m_CharacterClass == null)
+            {
+                m_CharacterClass = m_State.RegisteredAvatar.characterClass;
+            }
+            return m_CharacterClass;
+        }
+        set { m_CharacterClass = value; }
+    }
+
+    public NetworkHealthState NetHealthState { get; private set; }
     public NetworkLifeState NetLifeState { get; private set; }
 
+
+    /// <summary>
+    /// Server Action System Handler
+    /// </summary>
+    private ServerActionPlayer m_ServerActionPlayer;
+    public ServerActionPlayer ActionPlayer => m_ServerActionPlayer;
+
+    private NetworkAvatarGuidState m_State;
+
+    #endregion
+
+    #region Variables
+    public NetworkVariable<MovementStatus> MovementStatus { get; } = new NetworkVariable<MovementStatus>();
+    public NetworkVariable<ulong> HeldNetworkObject { get; } = new NetworkVariable<ulong>();
+    public NetworkVariable<ulong> TargetId { get; } = new NetworkVariable<ulong>();
+
+    public int HitPoints
+    {
+        get => NetHealthState.HitPoints.Value;
+        private set => NetHealthState.HitPoints.Value = value;
+    }
     public LifeState LifeState
     {
         get => NetLifeState.LifeState.Value;
         private set => NetLifeState.LifeState.Value = value;
     }
-
-    [SerializeField]
-    CharacterClass m_CharacterClass;
-
-    public CharacterClass CharacterClass
-    {
-        get 
-        { 
-            if (m_CharacterClass == null)
-            {
-                m_CharacterClass = m_State.RegisteredAvatar.characterClass;
-            }
-            return m_CharacterClass; 
-        }
-        set { m_CharacterClass = value; }
-    }
     public CharacterTypeEnum CharacterType => CharacterClass.CharacterType;
-    
+
+
+    private AIBrain m_AIBrain;
+    public AIBrain AIBrain { get { return m_AIBrain; } }
+
+    public bool IsValidTarget => LifeState != LifeState.Dead;
+    public bool IsNPC => CharacterClass.IsNpc;
+
+    [Header("Preset Variables")]
     [SerializeField]
-    PhysicsWrapper m_PhysicsWrapper;
-
-    public PhysicsWrapper physicsWrapper => m_PhysicsWrapper;
+    [Tooltip("If set to false, an NPC character will be denied its brain (won't attack or chase players)")]
+    private bool m_BrainEnabled = true;
 
     [SerializeField]
-    ServerAnimationHandler m_ServerAnimationHandler;
-
-    public ServerAnimationHandler serverAnimationHandler => m_ServerAnimationHandler;
-
-    public NetworkVariable<ulong> HeldNetworkObject { get; } = new NetworkVariable<ulong>();
-
-    public NetworkVariable<ulong> TargetId { get; } = new NetworkVariable<ulong>();
-
-    private ServerActionPlayer m_ServerActionPlayer;
-    public ServerActionPlayer ActionPlayer => m_ServerActionPlayer;
+    [Tooltip("Setting negative value disables destroying object after it is killed.")]
+    private float m_KilledDestroyDelaySeconds = 3.0f;
 
     [SerializeField] private Action m_StartingAction;
+    #endregion
 
-    public bool IsNpc => CharacterClass.IsNpc;
-
-    NetworkAvatarGuidState m_State;
-
+    #region Unity CallBacks
     private void Awake()
     {
         m_ServerActionPlayer = new ServerActionPlayer(this);
         m_State = GetComponent<NetworkAvatarGuidState>();
         NetLifeState = GetComponent<NetworkLifeState>();
+        NetHealthState = GetComponent<NetworkHealthState>();
     }
+    private void Update()
+    {
+        m_ServerActionPlayer.OnUpdate();
+        if (m_AIBrain != null && LifeState == LifeState.Alive && m_BrainEnabled)
+        {
+            m_AIBrain.Update();
+        }
+    }
+    #endregion
+
+    #region Network CallBacks
     public override void OnNetworkSpawn()
     {
         if (!IsServer) 
@@ -83,23 +126,35 @@ public class ServerCharacter : NetworkBehaviour
         }
         else
         {
+            NetLifeState.LifeState.OnValueChanged += OnLifeStateChanged;
+            m_DamageReceiver.DamageReceived += ReceiveHP;
+            m_DamageReceiver.CollisionEntered += CollisionEntered;
+
+            if (IsNPC)
+            {
+                m_AIBrain = new AIBrain(this, m_ServerActionPlayer);
+            }
             if (m_StartingAction != null)
             {
                 var startingAction = new ActionRequestData() { ActionID = m_StartingAction.ActionID };
                 PlayAction(ref startingAction);
             }
+            InitializeHitPoints();
         }
     }
 
     public override void OnNetworkDespawn()
     {
-        
+        NetLifeState.LifeState.OnValueChanged -= OnLifeStateChanged;
+        if (m_DamageReceiver)
+        {
+            m_DamageReceiver.DamageReceived -= ReceiveHP;
+            m_DamageReceiver.CollisionEntered -= CollisionEntered;
+        }
     }
-    private void Update()
-    {
-        m_ServerActionPlayer.OnUpdate();
-    }
+    #endregion
 
+    #region ServerRPC
     [ServerRpc]
     public void SendCharacterInputServerRpc(Vector3 movementTarget)
     {
@@ -131,26 +186,105 @@ public class ServerCharacter : NetworkBehaviour
     {
         m_ServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.StoppedChargingUp);
     }
+    #endregion
 
+    #region Others
     public void PlayAction(ref ActionRequestData action)
     {
-        if(action.CancelMovement)
+        if (LifeState == LifeState.Alive && !m_Movement.IsPerformingForcedMovement())
         {
-            m_Movement.CancelMove();
+            if (action.CancelMovement)
+            {
+                m_Movement.CancelMove();
+            }
+            m_ServerActionPlayer.PlayAction(ref action);
         }
-        m_ServerActionPlayer.PlayAction(ref action);
     }
     public Action GetStartAction()
     {
         return m_StartingAction;
     }
-    public Vector3 Aim(Vector2 lookDir, LayerMask layerMask)
+    private void OnLifeStateChanged(LifeState prevLifeState, LifeState lifeState)
     {
-        Ray ray = Camera.main.ScreenPointToRay(lookDir);
-        if (Physics.Raycast(ray, out RaycastHit hitinfo, layerMask))
+        if (lifeState != LifeState.Alive)
         {
-            return  new Vector3(hitinfo.point.x - transform.position.x,0, hitinfo.point.z - transform.position.z).normalized;
+            m_ServerActionPlayer.ClearActions(true);
+            m_Movement.CancelMove();
         }
-        return Vector3.zero;
     }
+    IEnumerator KilledDestroyProcess()
+    {
+        yield return new WaitForSeconds(m_KilledDestroyDelaySeconds);
+
+        if (NetworkObject != null)
+        {
+            NetworkObject.Despawn(true);
+        }
+    }
+    void ReceiveHP(ServerCharacter inflicter, int HP)
+    {
+        if (HP > 0)
+        {
+            m_ServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.Healed);
+            float healingMod = m_ServerActionPlayer.GetBuffedValue(Action.BuffableValue.PercentHealingReceived);
+            HP = (int)(HP * healingMod);
+        }
+        else
+        {
+            m_ServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.AttackedByEnemy);
+            float damageMod = m_ServerActionPlayer.GetBuffedValue(Action.BuffableValue.PercentDamageReceived);
+            HP = (int)(HP * damageMod);
+
+            ServerAnimationHandler.NetworkAnimator.SetTrigger("HitReact1");
+        }
+        HitPoints = Mathf.Clamp(HitPoints + HP, 0, CharacterClass.BaseHP);
+
+        if (m_AIBrain != null)
+        {
+            //let the brain know about the modified amount of damage we received.
+            m_AIBrain.ReceiveHP(inflicter, HP);
+        }
+        if (HitPoints <= 0)
+        {
+            if (IsNPC)
+            {
+                if (m_KilledDestroyDelaySeconds >= 0.0f && LifeState != LifeState.Dead)
+                {
+                    StartCoroutine(KilledDestroyProcess());
+                }
+                LifeState = LifeState.Dead;
+            }
+            else
+            {
+                LifeState = LifeState.Fainted;
+            }
+
+            m_ServerActionPlayer.ClearActions(false);
+        }
+    }
+    void InitializeHitPoints()
+    {
+        HitPoints = CharacterClass.BaseHP;
+        //TODO:
+        //if (!IsNpc)
+        //{
+        //    SessionPlayerData? sessionPlayerData = SessionManager<SessionPlayerData>.Instance.GetPlayerData(OwnerClientId);
+        //    if (sessionPlayerData is { HasCharacterSpawned: true })
+        //    {
+        //        HitPoints = sessionPlayerData.Value.CurrentHitPoints;
+        //        if (HitPoints <= 0)
+        //        {
+        //            LifeState = LifeState.Fainted;
+        //        }
+        //    }
+        //}
+    }
+    void CollisionEntered(Collision collision)
+    {
+        if (m_ServerActionPlayer != null)
+        {
+            m_ServerActionPlayer.CollisionEntered(collision);
+        }
+    }
+    #endregion
 }

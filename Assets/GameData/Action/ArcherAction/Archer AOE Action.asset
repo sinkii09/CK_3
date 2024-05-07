@@ -19,6 +19,8 @@ MonoBehaviour:
     Range: 20
     DurationSeconds: 2
     ExecTimeSeconds: 1
+    EffectDurationSeconds: 0
+    ReuseTimeSeconds: 0
     AnimAnticipation: AnticipateMove
     Anim: Skill1
     Anim2: 
@@ -26,7 +28,7 @@ MonoBehaviour:
     Radius: 4
     ActionInput: {fileID: 1638009621977115915, guid: fe436d0d50d485a4195893444a6b1229,
       type: 3}
-    ActionInterruptible: 1
+    ActionInterruptible: 0
     IsInterruptableBy: []
     BlockingMode: 0
     Projectiles: []

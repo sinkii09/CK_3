@@ -174,9 +174,6 @@ public class PhysicsProjectile : NetworkBehaviour
     [ClientRpc]
     private void RecvHitEnemyClientRPC(ulong enemyId)
     {
-        //in the future we could do quite fancy things, like deparenting the Graphics Arrow and parenting it to the target.
-        //For the moment we play some particles (optionally), and cause the target to animate a hit-react.
-
         NetworkObject targetNetObject;
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(enemyId, out targetNetObject))
         {
