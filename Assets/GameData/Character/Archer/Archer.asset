@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Archer
   m_EditorClassIdentifier: 
   CharacterType: 1
-  BaseAttack: {fileID: 11400000, guid: 63bfe59f8351deb4dac9b0cf122586cb, type: 2}
+  BaseAttack: {fileID: 11400000, guid: ea67fe57985320a489e1cc2aecc770b3, type: 2}
   Skill1: {fileID: 11400000, guid: 9e564af506b50d748a2dab1e1d1d90b8, type: 2}
   Skill2: {fileID: 11400000, guid: 221677b346e90954e99d2b88f0a62832, type: 2}
   Skill3: {fileID: 11400000, guid: 7bc3a5a05370b0640bef2947e44c1a08, type: 2}

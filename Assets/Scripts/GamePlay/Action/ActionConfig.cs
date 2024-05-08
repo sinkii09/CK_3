@@ -12,8 +12,10 @@ public enum ActionLogic
     AoE,
     Target,
     ChargedLaunchProjectile,
+    CurveLaunchProjectile,
     Chase,
     Dash,
+    Toss,
 }
 
 

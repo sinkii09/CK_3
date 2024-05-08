@@ -303,6 +303,12 @@ public class ClientInputSender : NetworkBehaviour
             case ActionLogic.Target:
                 resultData.ShouldClose = false;
                 return;
+            case ActionLogic.CurveLaunchProjectile:
+                resultData.Position = hitPoint;
+                resultData.Direction = direction;
+                resultData.ShouldClose = false;
+                resultData.CancelMovement = true;
+                return;
         }
     }
     

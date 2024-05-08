@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Skeleton_Minion
   m_EditorClassIdentifier: 
   CharacterType: 4
-  BaseAttack: {fileID: 11400000, guid: 8e30654f49d4e9248bd3602c830b4299, type: 2}
-  Skill1: {fileID: 0}
+  BaseAttack: {fileID: 0}
+  Skill1: {fileID: 11400000, guid: 56007dbeb49e86e4290b24568b0b7872, type: 2}
   Skill2: {fileID: 0}
   Skill3: {fileID: 0}
   BaseHP: 100

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4bde24aa26c834b9227d7f18017532, type: 3}
+  m_Name: New Launch Curve Projectile Action
+  m_EditorClassIdentifier: 
+  Config:
+    Logic: 6
+    Amount: 0
+    ManaCost: 0
+    Range: 20
+    DurationSeconds: 0
+    ExecTimeSeconds: 0
+    EffectDurationSeconds: 0
+    ReuseTimeSeconds: 0
+    AnimAnticipation: 
+    Anim: BaseAttack
+    Anim2: 
+    ReactAnim: 
+    OtherAnimatorVariable: 
+    Radius: 3.87
+    ActionInput: {fileID: 1638009621977115915, guid: fe436d0d50d485a4195893444a6b1229,
+      type: 3}
+    ActionInterruptible: 0
+    IsInterruptableBy: []
+    BlockingMode: 1
+    Projectiles:
+    - Prefab: {fileID: 811049029063674749, guid: 7667d722ef3dd464089bf0f06bdb72fd,
+        type: 3}
+      Speed: 15
+      Range: 5
+      Damage: 10
+      MaxVictims: 10
+    Spawns: []
+    IsFriendly: 0

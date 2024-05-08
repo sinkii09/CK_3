@@ -45,8 +45,10 @@ public class AoeActionInput : BaseActionInput
                 var data = new ActionRequestData
                 {
                     Position = transform.position,
+                    Direction = transform.position,
                     ActionID = m_ActionID,
                     ShouldQueue = false,
+                    CancelMovement = true,
                     TargetIds = null
                 };
                 m_SendInput(data);
