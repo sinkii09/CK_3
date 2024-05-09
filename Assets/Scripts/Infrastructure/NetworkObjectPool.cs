@@ -34,6 +34,8 @@ using UnityEngine.Pool;
             {
                 Singleton = this;
             }
+
+        DontDestroyOnLoad(gameObject);
         }
 
         public override void OnNetworkSpawn()

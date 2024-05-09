@@ -1529,11 +1529,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 846350240
       objectReference: {fileID: 0}
-    - target: {fileID: 6645551892316495646, guid: dc71be9287996d5448f9b6bdb1ae2a29,
-        type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 2812767722
-      objectReference: {fileID: 0}
     - target: {fileID: 7828264518544757345, guid: dc71be9287996d5448f9b6bdb1ae2a29,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1583,39 +1578,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8469091663850762677, guid: dc71be9287996d5448f9b6bdb1ae2a29,
-        type: 3}
-      propertyPath: PooledPrefabsList.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8469091663850762677, guid: dc71be9287996d5448f9b6bdb1ae2a29,
-        type: 3}
-      propertyPath: PooledPrefabsList.Array.data[0].Prefab
-      value: 
-      objectReference: {fileID: 8787849450496161361, guid: 5094fb4861952a7468cce45c0f1b9bd7,
-        type: 3}
-    - target: {fileID: 8469091663850762677, guid: dc71be9287996d5448f9b6bdb1ae2a29,
-        type: 3}
-      propertyPath: PooledPrefabsList.Array.data[1].Prefab
-      value: 
-      objectReference: {fileID: 811049029063674749, guid: 4ef2937db2e373248a2768de576a43c5,
-        type: 3}
-    - target: {fileID: 8469091663850762677, guid: dc71be9287996d5448f9b6bdb1ae2a29,
-        type: 3}
-      propertyPath: PooledPrefabsList.Array.data[2].Prefab
-      value: 
-      objectReference: {fileID: 811049029063674749, guid: 7667d722ef3dd464089bf0f06bdb72fd,
-        type: 3}
-    - target: {fileID: 8469091663850762677, guid: dc71be9287996d5448f9b6bdb1ae2a29,
-        type: 3}
-      propertyPath: PooledPrefabsList.Array.data[1].PrewarmCount
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8469091663850762677, guid: dc71be9287996d5448f9b6bdb1ae2a29,
-        type: 3}
-      propertyPath: PooledPrefabsList.Array.data[2].PrewarmCount
-      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1753,35 +1715,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameDataSource
       objectReference: {fileID: 0}
-    - target: {fileID: 1547317475569376733, guid: 1957ddd3f16b4e74ab25b95b3980e39b,
-        type: 3}
-      propertyPath: m_ActionPrototypes.Array.size
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1547317475569376733, guid: 1957ddd3f16b4e74ab25b95b3980e39b,
-        type: 3}
-      propertyPath: m_ActionPrototypes.Array.data[3]
-      value: 
-      objectReference: {fileID: 11400000, guid: 221677b346e90954e99d2b88f0a62832,
-        type: 2}
-    - target: {fileID: 1547317475569376733, guid: 1957ddd3f16b4e74ab25b95b3980e39b,
-        type: 3}
-      propertyPath: m_ActionPrototypes.Array.data[4]
-      value: 
-      objectReference: {fileID: 11400000, guid: 8e30654f49d4e9248bd3602c830b4299,
-        type: 2}
-    - target: {fileID: 1547317475569376733, guid: 1957ddd3f16b4e74ab25b95b3980e39b,
-        type: 3}
-      propertyPath: m_ActionPrototypes.Array.data[5]
-      value: 
-      objectReference: {fileID: 11400000, guid: 56007dbeb49e86e4290b24568b0b7872,
-        type: 2}
-    - target: {fileID: 1547317475569376733, guid: 1957ddd3f16b4e74ab25b95b3980e39b,
-        type: 3}
-      propertyPath: m_ActionPrototypes.Array.data[6]
-      value: 
-      objectReference: {fileID: 11400000, guid: ea67fe57985320a489e1cc2aecc770b3,
-        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
