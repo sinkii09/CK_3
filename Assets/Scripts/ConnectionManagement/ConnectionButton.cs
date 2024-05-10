@@ -9,8 +9,7 @@ public class ConnectionButton : MonoBehaviour
     {
         NetworkManager.Singleton.StartHost();
     }
-    public void StartClient
-        ()
+    public void StartClient()
     {
         NetworkManager.Singleton.StartClient();
     }

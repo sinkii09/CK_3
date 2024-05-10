@@ -37,30 +37,28 @@ public class NetworkAvatarGuidState : NetworkBehaviour
 
     void RegisterAvatar(Guid guid)
     {
-        //if (guid.Equals(Guid.Empty))
-        //{
-            
-        //    return;
-        //}
-        SetRandomAvatar();
-        // based on the Guid received, Avatar is fetched from AvatarRegistry
-        if (!m_AvatarRegistry.TryGetAvatar(AvatarGuid.Value.ToGuid(), out var avatar))
+        if (guid.Equals(Guid.Empty))
         {
-            Debug.LogError("Avatar not found!");
+
             return;
         }
+        // based on the Guid received, Avatar is fetched from AvatarRegistry
+        //if (!m_AvatarRegistry.TryGetAvatar(guid, out var avatar))
+        //{
+        //    Debug.LogError("Avatar not found!");
+        //    return;
+        //}
 
         if (m_Avatar != null)
         {
-            // already set, this is an idempotent call, we don't want to Instantiate twice
             return;
         }
 
-        m_Avatar = avatar;
+        m_Avatar = m_AvatarRegistry.GetRandomAvatar();
 
         if (TryGetComponent<ServerCharacter>(out var serverCharacter))
         {
-            serverCharacter.CharacterClass = avatar.characterClass;
+            serverCharacter.CharacterClass = m_Avatar.characterClass;
         }
     }
 }

@@ -697,30 +697,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817166268}
   m_CullTransparentMesh: 1
---- !u!114 &1926081398 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5621030690126048150, guid: f89537380841d7b45a68ab4525de2ecd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2197806491588820963}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccdc82a6045142a4ba66478606e5e915, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1926081399 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5642841385885650225, guid: f89537380841d7b45a68ab4525de2ecd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2197806491588820963}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 624fb2af8434127428bdbdcf6481a148, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1926081400 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7618350228853284975, guid: f89537380841d7b45a68ab4525de2ecd,
@@ -746,21 +722,11 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 914431905
       objectReference: {fileID: 0}
-    - target: {fileID: 423514337287696786, guid: f89537380841d7b45a68ab4525de2ecd,
-        type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 3429864875
-      objectReference: {fileID: 0}
     - target: {fileID: 1191978332407472895, guid: f89537380841d7b45a68ab4525de2ecd,
         type: 3}
       propertyPath: m_Name
       value: CharacterSelectState
       objectReference: {fileID: 0}
-    - target: {fileID: 3730133962532177139, guid: f89537380841d7b45a68ab4525de2ecd,
-        type: 3}
-      propertyPath: m_NetcodeHooks
-      value: 
-      objectReference: {fileID: 1926081398}
     - target: {fileID: 4929486717257464964, guid: f89537380841d7b45a68ab4525de2ecd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -811,16 +777,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7618350228853284975, guid: f89537380841d7b45a68ab4525de2ecd,
-        type: 3}
-      propertyPath: m_NetcodeHooks
-      value: 
-      objectReference: {fileID: 1926081398}
-    - target: {fileID: 7618350228853284975, guid: f89537380841d7b45a68ab4525de2ecd,
-        type: 3}
-      propertyPath: m_NetworkCharSelection
-      value: 
-      objectReference: {fileID: 1926081399}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

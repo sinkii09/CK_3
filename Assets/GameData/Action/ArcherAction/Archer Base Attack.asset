@@ -25,6 +25,7 @@ MonoBehaviour:
     Anim: BaseAttack
     Anim2: 
     ReactAnim: 
+    OtherAnimatorVariable: 
     Radius: 0
     ActionInput: {fileID: 0}
     ActionInterruptible: 0

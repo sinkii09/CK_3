@@ -48,15 +48,33 @@ public class ServerCharSelectState : GameStateBehaviour
         else
         {
             networkCharSelection.OnClientChangedSeat += OnClientChangedSeat;
+
+            NetworkManager.Singleton.SceneManager.OnSceneEvent += SceneManager_OnSceneEvent;
         }
     }
 
     private void OnNetworkDespawn()
     {
+        if(NetworkManager.Singleton)
+        {
+            NetworkManager.Singleton.SceneManager.OnSceneEvent -= SceneManager_OnSceneEvent;
+        }
         if (networkCharSelection)
         {
             networkCharSelection.OnClientChangedSeat -= OnClientChangedSeat;
-        };
+        }
+    }
+    private void SceneManager_OnSceneEvent(SceneEvent sceneEvent)
+    {
+        if(sceneEvent.SceneEventType != SceneEventType.LoadComplete) { return; }
+
+        SeatNewPlayer(sceneEvent.ClientId);
+    }
+    
+    private void SeatNewPlayer(ulong clientId)
+    {
+        //TODO
+        networkCharSelection.LobbyPlayers.Add(clientId);
     }
 
     private void OnClientChangedSeat(ulong clientId, int newSeatIdx, bool lockedIn)
@@ -65,8 +83,25 @@ public class ServerCharSelectState : GameStateBehaviour
     }
     void CloseLobbyIfReady()
     {
+        SaveLobbyResults();
         m_WaitToEndLobbyCoroutine = StartCoroutine(WaitToEndLobby());
     }
+
+    private void SaveLobbyResults()
+    {
+        //TODO
+        foreach(var player in networkCharSelection.LobbyPlayers)
+        {
+            var playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(player);
+
+            if(playerNetworkObject && playerNetworkObject.TryGetComponent(out PersistentPlayer persistentPlayer))
+            {
+                persistentPlayer.NetworkAvatarGuidState.AvatarGuid.Value = networkCharSelection.AvatarConfiguration[0].Guid.ToNetworkGuid();
+                
+            }
+        }
+    }
+
     IEnumerator WaitToEndLobby()
     {
         yield return new WaitForSeconds(3);

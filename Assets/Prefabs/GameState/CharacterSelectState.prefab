@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3127060824
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 914431905
+  InScenePlacedSourceGlobalObjectIdHash: 3429864875
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 0
   ActiveSceneSynchronization: 0
@@ -69,6 +69,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85fd9c483d1d780479255f2ebbeace55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: ApplicationController
+  autoRun: 1
+  autoInjectGameObjects: []
+  m_NetcodeHooks: {fileID: 5621030690126048150}
 --- !u!114 &7618350228853284975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,6 +86,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37bf365e9f3b3844ca0409faf0a32f51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: ApplicationController
+  autoRun: 1
+  autoInjectGameObjects: []
+  m_NetcodeHooks: {fileID: 5621030690126048150}
+  m_NetworkCharSelection: {fileID: 5642841385885650225}
 --- !u!114 &5642841385885650225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,6 +104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 624fb2af8434127428bdbdcf6481a148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AvatarConfiguration:
+  - {fileID: 11400000, guid: 59ad1796c41837c4a88cc01ac69e356b, type: 2}
 --- !u!114 &5621030690126048150
 MonoBehaviour:
   m_ObjectHideFlags: 0

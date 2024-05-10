@@ -39,10 +39,13 @@ public class SceneLoaderWrapper : NetworkBehaviour
     public override void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        NetworkManager.OnServerStarted -= OnNetworkingSessionStarted;
-        NetworkManager.OnClientStarted -= OnNetworkingSessionStarted;
-        NetworkManager.OnServerStopped -= OnNetworkingSessionEnded;
-        NetworkManager.OnClientStopped -= OnNetworkingSessionEnded;
+        if(NetworkManager!=null)
+        {
+            NetworkManager.OnServerStarted -= OnNetworkingSessionStarted;
+            NetworkManager.OnClientStarted -= OnNetworkingSessionStarted;
+            NetworkManager.OnServerStopped -= OnNetworkingSessionEnded;
+            NetworkManager.OnClientStopped -= OnNetworkingSessionEnded;
+        }
         base.OnDestroy();
     }
 
