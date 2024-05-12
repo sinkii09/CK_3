@@ -30,7 +30,7 @@ MonoBehaviour:
     ActionInput: {fileID: 0}
     ActionInterruptible: 0
     IsInterruptableBy: []
-    BlockingMode: 0
+    BlockingMode: 1
     Projectiles:
     - Prefab: {fileID: 8787849450496161361, guid: 5094fb4861952a7468cce45c0f1b9bd7,
         type: 3}

@@ -25,6 +25,7 @@ MonoBehaviour:
     Anim: ChargedShotStart
     Anim2: ChargedShotEnd
     ReactAnim: 
+    OtherAnimatorVariable: 
     Radius: 0
     ActionInput: {fileID: 3162615933874976823, guid: 6fc0b3b490ac11c4bac2d990c6929b95,
       type: 3}
