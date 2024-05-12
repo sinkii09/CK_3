@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.CK.GamePlay.GameplayObjects;
 using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,6 +14,9 @@ using VContainer.Unity;
 public class ServerGamePlayState : GameStateBehaviour
 {
     public override GameState ActiveState { get { return GameState.Game01; } }
+    
+    [SerializeField]
+    PersistentGameState persistentGameState;
 
     [SerializeField]
     NetcodeHooks m_NetcodeHooks;
@@ -20,11 +24,18 @@ public class ServerGamePlayState : GameStateBehaviour
     [SerializeField]
     private NetworkObject m_PlayerPrefab;
 
+    [SerializeField]
+    private Transform[] m_PlayerSpawnPoints;
+
+    private List<Transform> m_PlayerSpawnPointsList = null;
+    
     public bool InitialSpawnDone { get; private set; }
 
+    [Inject] ISubscriber<LifeStateChangedEventMessage> m_LifeStateChangedEventMessageSubscriber;
 
     [Inject] ConnectionManager m_ConnectionManager;
 
+    [Inject] PersistentGameState m_PersistentGameState;
     protected override void Awake()
     {
         base.Awake();
@@ -49,13 +60,20 @@ public class ServerGamePlayState : GameStateBehaviour
             enabled = false;
             return;
         }
-
+        m_PersistentGameState.Reset();
+        m_LifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
         NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEventComplete;
         NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
     }
 
     void OnNetworkDespawn()
     {
+        if (m_LifeStateChangedEventMessageSubscriber != null)
+        {
+            m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
+        }
+        NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
         NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadEventComplete;
         NetworkManager.Singleton.SceneManager.OnSynchronizeComplete -= OnSynchronizeComplete;
     }
@@ -84,10 +102,29 @@ public class ServerGamePlayState : GameStateBehaviour
     private void SpawnPlayer(ulong clientId, bool lateJoin)
     {
         //TODO
+
+        Transform spawnPoint = null;
+
+        if(m_PlayerSpawnPointsList == null || m_PlayerSpawnPointsList.Count == 0)
+        {
+            m_PlayerSpawnPointsList = new List<Transform>(m_PlayerSpawnPoints);
+        }
+
+        int index = UnityEngine.Random.Range(0, m_PlayerSpawnPointsList.Count);
+        spawnPoint = m_PlayerSpawnPointsList[index];
+        m_PlayerSpawnPointsList.RemoveAt(index);
         var playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(clientId);
 
         var newPlayer = Instantiate(m_PlayerPrefab , Vector3.zero , Quaternion.identity);
+        
+        var newPlayerCharacter = newPlayer.GetComponent<ServerCharacter>();
 
+        var physicsTransform = newPlayerCharacter.physicsWrapper.Transform;
+
+        if (spawnPoint != null)
+        {
+            physicsTransform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        }
         var persistentPlayerExists = playerNetworkObject.TryGetComponent(out PersistentPlayer persistentPlayer);
         
         Assert.IsTrue(persistentPlayerExists,
@@ -101,4 +138,64 @@ public class ServerGamePlayState : GameStateBehaviour
         networkAvatarGuidState.AvatarGuid = new NetworkVariable<NetworkGuid>(persistentPlayer.NetworkAvatarGuidState.AvatarGuid.Value);
         newPlayer.SpawnWithOwnership(clientId, true);
     }
+    private void OnClientDisconnectCallback(ulong clientId)
+    {
+        if(clientId != NetworkManager.Singleton.LocalClientId)
+        {
+            StartCoroutine(WaitToCheckForGameOver());
+        }
+    }
+    IEnumerator WaitToCheckForGameOver()
+    {
+        yield return null;
+        CheckForGameOver();
+    }
+    private void OnLifeStateChangedEventMessage(LifeStateChangedEventMessage message)
+    {
+        switch(message.CharacterType)
+        {
+            case CharacterTypeEnum.Warrior:
+            case CharacterTypeEnum.Archer:
+            case CharacterTypeEnum.Mage:
+            case CharacterTypeEnum.Rogue:
+                if(message.LifeState == LifeState.Fainted)
+                {
+                    CheckForGameOver();
+                }
+                break;
+            case CharacterTypeEnum.Boss:
+                {
+                    if(message.LifeState == LifeState.Dead)
+                    {
+                        BossDefeated();
+                    }
+                    break;
+                }
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    private void CheckForGameOver()
+    {
+        foreach (var serverCharacter in PlayerServerCharacter.GetPlayerServerCharacters())
+        {
+            if(serverCharacter != null && serverCharacter.LifeState == LifeState.Alive)
+            {
+                return;
+            }
+        }
+        StartCoroutine(CoroGameOver(2,false)) ;
+    }
+    void BossDefeated()
+    {
+        StartCoroutine(CoroGameOver(5,true));
+    }
+    IEnumerator CoroGameOver(float delay, bool isWon)
+    {
+        m_PersistentGameState.SetWinState(isWon ? WinState.Win : WinState.Loss);
+
+        yield return new WaitForSeconds(delay);
+
+        SceneLoaderWrapper.Instance.LoadScene("PostGame",useNetworkSceneManager:true);
+    }    
 }

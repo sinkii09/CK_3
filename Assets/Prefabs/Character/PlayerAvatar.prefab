@@ -126,16 +126,37 @@ MonoBehaviour:
     TransitionIndex: 3
   - IsCrossFadeExit: 0
     Layer: 1
+    OriginatingState: -499022955
+    DestinationState: 316812144
+    TransitionDuration: 0
+    TriggerNameHash: -1233417124
+    TransitionIndex: 4
+  - IsCrossFadeExit: 0
+    Layer: 1
     OriginatingState: 897778862
     DestinationState: 303110433
     TransitionDuration: 0.25
     TriggerNameHash: 303110433
     TransitionIndex: 0
   - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: 316812144
+    DestinationState: -499022955
+    TransitionDuration: 0.25
+    TriggerNameHash: -726612165
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: 316812144
+    DestinationState: 997449671
+    TransitionDuration: 0
+    TriggerNameHash: -1417765733
+    TransitionIndex: 1
+  - IsCrossFadeExit: 0
     Layer: 2
     OriginatingState: -499022955
     DestinationState: -1979496331
-    TransitionDuration: 0.25
+    TransitionDuration: 0
     TriggerNameHash: -1747783153
     TransitionIndex: 0
   m_Animator: {fileID: 6899381605656396887}
@@ -216,7 +237,7 @@ PrefabInstance:
     - target: {fileID: 6401064786630202211, guid: 6e2b3d384cb446540898d558d50831e1,
         type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 306055630
+      value: 146223350
       objectReference: {fileID: 0}
     - target: {fileID: 8755115819741814878, guid: 6e2b3d384cb446540898d558d50831e1,
         type: 3}
@@ -289,6 +310,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 8307777435820220307}
+    - targetCorrespondingSourceObject: {fileID: 2106232342769059349, guid: 6e2b3d384cb446540898d558d50831e1,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2210833509700730536}
   m_SourcePrefab: {fileID: 100100000, guid: 6e2b3d384cb446540898d558d50831e1, type: 3}
 --- !u!114 &109457154533781310 stripped
 MonoBehaviour:
@@ -374,6 +399,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CachedServerCharacter: {fileID: 109457154533781310}
+--- !u!114 &2210833509700730536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4432293218616329406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ddd27284338ab0409b2667d61ce7ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6428914209652908789 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8755115819741814878, guid: 6e2b3d384cb446540898d558d50831e1,

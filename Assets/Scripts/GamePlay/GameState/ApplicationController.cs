@@ -21,6 +21,10 @@ public class ApplicationController : LifetimeScope
         base.Configure(builder);
         builder.RegisterComponent(m_ConnectionManager);
         builder.RegisterComponent(m_NetworkManager);
+
+        builder.Register<PersistentGameState>(Lifetime.Singleton);
+
+        builder.RegisterComponent(new NetworkedMessageChannel<LifeStateChangedEventMessage>()).AsImplementedInterfaces();
     }
     private void Start()
     {

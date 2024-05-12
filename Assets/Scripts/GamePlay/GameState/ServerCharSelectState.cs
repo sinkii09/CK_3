@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Multiplayer.Samples.Utilities;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using UnityEngine;
 using VContainer;
 
@@ -16,6 +17,8 @@ public class ServerCharSelectState : GameStateBehaviour
     public NetworkCharSelection networkCharSelection { get; private set; }
 
     Coroutine m_WaitToEndLobbyCoroutine;
+
+    
 
     [Inject]
     ConnectionManager m_ConnectionManager;
@@ -74,15 +77,59 @@ public class ServerCharSelectState : GameStateBehaviour
     private void SeatNewPlayer(ulong clientId)
     {
         //TODO
-        networkCharSelection.LobbyPlayers.Add(clientId);
+        networkCharSelection.LobbyPlayers.Add(new NetworkCharSelection.PlayerStatus(clientId,(int)clientId, NetworkCharSelection.SeatState.Inactive));
     }
-
+    /// <summary>
+    /// Call moi khi moi client chon seat hoac click ready
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <param name="newSeatIdx"></param>
+    /// <param name="lockedIn"></param>
     private void OnClientChangedSeat(ulong clientId, int newSeatIdx, bool lockedIn)
-    {
+    {   
+        int idx = FindLobbyPlayerIdx(clientId);
+        // neu client == null
+        if ( idx == -1)
+        {
+            return;
+        }
+
+        if(networkCharSelection.IsLobbyClosed.Value)
+        {
+            return;
+        }
+        if(newSeatIdx == -1)
+        {
+            lockedIn = false;
+        }
+
+        networkCharSelection.LobbyPlayers[idx] = new NetworkCharSelection.PlayerStatus(clientId, networkCharSelection.LobbyPlayers[idx].PlayerNumber, lockedIn ? NetworkCharSelection.SeatState.LockedIn : NetworkCharSelection.SeatState.Active, newSeatIdx);
         CloseLobbyIfReady();
     }
+    int FindLobbyPlayerIdx(ulong clientId)
+    {
+        for (int i = 0; i < networkCharSelection.LobbyPlayers.Count; ++i)
+        {
+            if (networkCharSelection.LobbyPlayers[i].ClientId == clientId)
+                return i;
+        }
+        return -1;
+    }
+    /// <summary>
+    /// Checks foreach player in lobby if lockin choice, if not -> return
+    /// else -> close lobby , save choice result and go to next scene
+    /// </summary>
     void CloseLobbyIfReady()
     {
+        
+        foreach(NetworkCharSelection.PlayerStatus playerStatus in networkCharSelection.LobbyPlayers)
+        {
+            if(playerStatus.SeatState != NetworkCharSelection.SeatState.LockedIn)
+            {
+                return;
+            }
+        }
+        networkCharSelection.IsLobbyClosed.Value = true;
         SaveLobbyResults();
         m_WaitToEndLobbyCoroutine = StartCoroutine(WaitToEndLobby());
     }
@@ -90,14 +137,13 @@ public class ServerCharSelectState : GameStateBehaviour
     private void SaveLobbyResults()
     {
         //TODO
-        foreach(var player in networkCharSelection.LobbyPlayers)
+        foreach(NetworkCharSelection.PlayerStatus playerStatus in networkCharSelection.LobbyPlayers)
         {
-            var playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(player);
+            var playerNetworkObject = NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(playerStatus.ClientId);
 
             if(playerNetworkObject && playerNetworkObject.TryGetComponent(out PersistentPlayer persistentPlayer))
             {
-                persistentPlayer.NetworkAvatarGuidState.AvatarGuid.Value = networkCharSelection.AvatarConfiguration[0].Guid.ToNetworkGuid();
-                
+                persistentPlayer.NetworkAvatarGuidState.AvatarGuid.Value = networkCharSelection.AvatarConfiguration[playerStatus.SeatIdx].Guid.ToNetworkGuid();
             }
         }
     }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6358764c1c426474ca4e3a16ebc8941c, type: 3}
   m_Name: Skeleton_Minion
   m_EditorClassIdentifier: 
-  CharacterType: 4
+  CharacterType: 5
   BaseAttack: {fileID: 0}
   Skill1: {fileID: 11400000, guid: 56007dbeb49e86e4290b24568b0b7872, type: 2}
   Skill2: {fileID: 0}

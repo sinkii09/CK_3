@@ -10,6 +10,7 @@ public enum CharacterTypeEnum
     Rogue,
 
     Skeleton_minion,
+    Boss
 }
 
 [CreateAssetMenu(menuName = "GameData/CharacterClass", order = 1)]

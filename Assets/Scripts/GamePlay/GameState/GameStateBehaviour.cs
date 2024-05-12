@@ -8,6 +8,9 @@ public enum GameState
     MainMenu,
     CharSelect,
     Game01,
+    Game02,
+    Game03,
+    PostGame,
 }
 public abstract class GameStateBehaviour : LifetimeScope
 {

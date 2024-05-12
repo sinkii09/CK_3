@@ -55,7 +55,7 @@ public class ClientCharSelectState : GameStateBehaviour
     {
         if (m_NetworkCharSelection.IsSpawned)
         {
-            m_NetworkCharSelection.ChangeSeatServerRPC(NetworkManager.Singleton.LocalClientId, -1, true);
+            m_NetworkCharSelection.ChangeSeatServerRPC(NetworkManager.Singleton.LocalClientId, 0, true);
         }
     }
 }

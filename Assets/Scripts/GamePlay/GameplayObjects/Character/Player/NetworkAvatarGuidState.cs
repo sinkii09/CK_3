@@ -43,19 +43,19 @@ public class NetworkAvatarGuidState : NetworkBehaviour
             return;
         }
         // based on the Guid received, Avatar is fetched from AvatarRegistry
-        //if (!m_AvatarRegistry.TryGetAvatar(guid, out var avatar))
-        //{
-        //    Debug.LogError("Avatar not found!");
-        //    return;
-        //}
+        if (!m_AvatarRegistry.TryGetAvatar(guid, out var avatar))
+        {
+            Debug.LogError("Avatar not found!");
+            return;
+        }
 
         if (m_Avatar != null)
         {
             return;
         }
 
-        m_Avatar = m_AvatarRegistry.GetRandomAvatar();
-
+        //m_Avatar = m_AvatarRegistry.GetRandomAvatar();
+        m_Avatar = avatar;
         if (TryGetComponent<ServerCharacter>(out var serverCharacter))
         {
             serverCharacter.CharacterClass = m_Avatar.characterClass;

@@ -33,7 +33,7 @@ public static class ActionFactory
         var pool = GetActionPool(action.ActionID);
         pool.Release(action);
     }
-    public static void PurgePoolActions()
+    public static void PurgePooledActions()
     {
         foreach(var actionPool in ActionPools.Values)
         {
