@@ -171,6 +171,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  m_UpdateRunner: {fileID: 2134121627}
   m_ConnectionManager: {fileID: 1614386564}
   m_NetworkManager: {fileID: 323211143}
 --- !u!114 &323211143 stripped
@@ -193,6 +194,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 507374194955537055, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
+        type: 3}
+      propertyPath: m_ProtocolType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1962807129703177860, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
         type: 3}
       propertyPath: m_Name
@@ -605,6 +611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111393682b3a6774c9db3951578a7607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxConnectedPlayers: 4
 --- !u!1 &1665450941
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,6 +741,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2134121626}
+  - component: {fileID: 2134121627}
   m_Layer: 0
   m_Name: UpdateRunner
   m_TagString: Untagged
@@ -756,17 +764,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2134121627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134121625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a274398bf93675e45ad552560749cf52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 822636526}
   - {fileID: 461493501}
+  - {fileID: 2134121626}
   - {fileID: 2099333854}
   - {fileID: 1448832440}
   - {fileID: 1665450942}
   - {fileID: 293478531}
   - {fileID: 1614386563}
-  - {fileID: 2134121626}
   - {fileID: 822022707}
   - {fileID: 1303067727}
