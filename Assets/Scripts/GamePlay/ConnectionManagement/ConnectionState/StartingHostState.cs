@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Multiplayer.Samples.BossRoom;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using VContainer;
 
-public class StartingHostState : OnlineState
+class StartingHostState : OnlineState
 {
 
     [Inject]
@@ -28,8 +29,10 @@ public class StartingHostState : OnlineState
         if(clientId == m_ConnectionManager.NetworkManager.LocalClient.ClientId)
         {
             var payLoad = System.Text.Encoding.UTF8.GetString(connectionData);
-            //TODO
-            //var connectionPayload = JsonUtility.FromJson<>
+            
+            var connectionPayload = JsonUtility.FromJson<ConnectionPayload>(payLoad);
+            SessionManager<SessionPlayerData>.Instance.SetupConnectingPlayerSessionData(clientId, connectionPayload.playerId,
+                new SessionPlayerData(clientId, connectionPayload.playerName, new NetworkGuid(), 0, true));
             response.Approved = true;
             response.CreatePlayerObject = true;
         }
@@ -42,7 +45,6 @@ public class StartingHostState : OnlineState
 
     public override void Exit()
     {
-        base.Exit();
     }
 
     public override void OnServerStarted()

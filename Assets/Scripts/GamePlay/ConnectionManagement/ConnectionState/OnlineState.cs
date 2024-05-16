@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OnlineState : ConnectionState
+abstract class OnlineState : ConnectionState
 {
-    public override void Enter()
+    public override void OnUserRequestedShutdown()
     {
-        throw new System.NotImplementedException();
+        m_ConnectStatusPublisher.Publish(ConnectStatus.UserRequestedDisconnect);
+        m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
     }
-
-    public override void Exit()
+    public override void OnTransportFailure()
     {
-        throw new System.NotImplementedException();
+        m_ConnectionManager.ChangeState(m_ConnectionManager.m_Offline);
     }
 }

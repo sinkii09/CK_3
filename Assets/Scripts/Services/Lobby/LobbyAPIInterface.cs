@@ -23,95 +23,99 @@ public class LobbyAPIInterface
             new QueryOrder(false,QueryOrder.FieldOptions.Created)
         };
     }
-    public async Task<Lobby> CreateLobby(string requesterUserId, string lobbyName,int maxPlayers, bool isPrivate, Dictionary<string,PlayerDataObject> hostUserData, Dictionary<string,DataObject> lobbyData)
+    public async Task<Lobby> CreateLobby(string requesterUasId, string lobbyName, int maxPlayers, bool isPrivate, Dictionary<string, PlayerDataObject> hostUserData, Dictionary<string, DataObject> lobbyData)
     {
-        CreateLobbyOptions options = new CreateLobbyOptions()
+        CreateLobbyOptions createOptions = new CreateLobbyOptions
         {
             IsPrivate = isPrivate,
-            IsLocked = true,
-            Player = new Player(id: requesterUserId, data: hostUserData),
+            IsLocked = true, // locking the lobby at creation to prevent other players from joining before it is ready
+            Player = new Player(id: requesterUasId, data: hostUserData),
             Data = lobbyData
         };
-        return await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
+
+        return await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createOptions);
     }
+
     public async Task DeleteLobby(string lobbyId)
     {
         await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
     }
 
-    public async Task<Lobby> JoinLobbyByCode(string requesterUserId, string lobbyCode, Dictionary<string, PlayerDataObject> localUserData)
+    public async Task<Lobby> JoinLobbyByCode(string requesterUasId, string lobbyCode, Dictionary<string, PlayerDataObject> localUserData)
     {
-        JoinLobbyByCodeOptions options = new JoinLobbyByCodeOptions
-        {
-            Player = new Player(id: requesterUserId, data: localUserData)
-        };
-        return await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, options);
+        JoinLobbyByCodeOptions joinOptions = new JoinLobbyByCodeOptions { Player = new Player(id: requesterUasId, data: localUserData) };
+        return await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, joinOptions);
     }
-    public async Task<Lobby> JoinLobbyById(string requesterUserId, string lobbyId, Dictionary<string, PlayerDataObject> localUserData)
+
+    public async Task<Lobby> JoinLobbyById(string requesterUasId, string lobbyId, Dictionary<string, PlayerDataObject> localUserData)
     {
-        JoinLobbyByIdOptions options = new JoinLobbyByIdOptions 
-        {
-            Player = new Player(id: requesterUserId, data: localUserData) 
-        };
-        return await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId, options);
+        JoinLobbyByIdOptions joinOptions = new JoinLobbyByIdOptions { Player = new Player(id: requesterUasId, data: localUserData) };
+        return await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId, joinOptions);
     }
-    public async Task<Lobby> QuickJoinLobby(string requesterUserId, Dictionary<string, PlayerDataObject> localUserData)
+
+    public async Task<Lobby> QuickJoinLobby(string requesterUasId, Dictionary<string, PlayerDataObject> localUserData)
     {
-        QuickJoinLobbyOptions options = new QuickJoinLobbyOptions
+        var joinRequest = new QuickJoinLobbyOptions
         {
             Filter = m_Filters,
-            Player = new Player(id: requesterUserId, data: localUserData)
+            Player = new Player(id: requesterUasId, data: localUserData)
         };
-        return await LobbyService.Instance.QuickJoinLobbyAsync(options);
+
+        return await LobbyService.Instance.QuickJoinLobbyAsync(joinRequest);
     }
+
     public async Task<Lobby> ReconnectToLobby(string lobbyId)
     {
         return await LobbyService.Instance.ReconnectToLobbyAsync(lobbyId);
     }
-    public async Task RemovePlayerFromLobby(string requesterUserId, string lobbyId)
+
+    public async Task RemovePlayerFromLobby(string requesterUasId, string lobbyId)
     {
         try
         {
-            await LobbyService.Instance.RemovePlayerAsync(lobbyId, requesterUserId);
+            await LobbyService.Instance.RemovePlayerAsync(lobbyId, requesterUasId);
         }
-        catch (LobbyServiceException e) when (e is { Reason: LobbyExceptionReason.PlayerNotFound })
+        catch (LobbyServiceException e)
+            when (e is { Reason: LobbyExceptionReason.PlayerNotFound })
         {
-            
+            // If Player is not found, they have already left the lobby or have been kicked out. No need to throw here
         }
     }
+
     public async Task<QueryResponse> QueryAllLobbies()
     {
-        QueryLobbiesOptions options = new QueryLobbiesOptions
+        QueryLobbiesOptions queryOptions = new QueryLobbiesOptions
         {
             Count = k_MaxLobbiesToShow,
             Filters = m_Filters,
             Order = m_Order
         };
-        return await LobbyService.Instance.QueryLobbiesAsync(options);
+
+        return await LobbyService.Instance.QueryLobbiesAsync(queryOptions);
     }
+
     public async Task<Lobby> UpdateLobby(string lobbyId, Dictionary<string, DataObject> data, bool shouldLock)
     {
-        UpdateLobbyOptions options = new UpdateLobbyOptions
-        {
-            Data = data,
-            IsLocked = shouldLock
-        };
-        return await LobbyService.Instance.UpdateLobbyAsync(lobbyId, options);
+        UpdateLobbyOptions updateOptions = new UpdateLobbyOptions { Data = data, IsLocked = shouldLock };
+        return await LobbyService.Instance.UpdateLobbyAsync(lobbyId, updateOptions);
     }
+
     public async Task<Lobby> UpdatePlayer(string lobbyId, string playerId, Dictionary<string, PlayerDataObject> data, string allocationId, string connectionInfo)
     {
-        UpdatePlayerOptions options = new UpdatePlayerOptions
+        UpdatePlayerOptions updateOptions = new UpdatePlayerOptions
         {
             Data = data,
             AllocationId = allocationId,
             ConnectionInfo = connectionInfo
         };
-        return await LobbyService.Instance.UpdatePlayerAsync(lobbyId, playerId, options);
+        return await LobbyService.Instance.UpdatePlayerAsync(lobbyId, playerId, updateOptions);
     }
+
     public async void SendHeartbeatPing(string lobbyId)
     {
         await LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
     }
+
     public async Task<ILobbyEvents> SubscribeToLobby(string lobbyId, LobbyEventCallbacks eventCallbacks)
     {
         return await LobbyService.Instance.SubscribeToLobbyEventsAsync(lobbyId, eventCallbacks);

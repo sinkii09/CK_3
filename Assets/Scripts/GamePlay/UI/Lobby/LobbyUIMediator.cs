@@ -22,6 +22,7 @@ public class LobbyUIMediator : MonoBehaviour
     LocalLobbyUser m_LocalUser;
     LocalLobby m_LocalLobby;
     ConnectionManager m_ConnectionManager;
+    NameGenerationData m_NameGenerationData;
 
     ISubscriber<ConnectStatus> m_ConnectStatusSubscriber;
 
@@ -34,6 +35,7 @@ public class LobbyUIMediator : MonoBehaviour
         LocalLobbyUser localLobbyUser,
         LocalLobby localLobby,
         ConnectionManager connectionManager,
+        NameGenerationData nameGenerationData,
         ISubscriber<ConnectStatus> connectStatusSubscriber
         )
     {
@@ -43,6 +45,8 @@ public class LobbyUIMediator : MonoBehaviour
         m_LocalLobby = localLobby;
         m_ConnectionManager = connectionManager;
         m_ConnectStatusSubscriber = connectStatusSubscriber;
+        m_NameGenerationData = nameGenerationData;
+        RegerateName();
 
         m_ConnectStatusSubscriber.Subscribe(OnConnectStatus);
     }
@@ -114,7 +118,6 @@ public class LobbyUIMediator : MonoBehaviour
     {
         if(Unity.Services.Core.UnityServices.State != ServicesInitializationState.Initialized)
         {
-            Debug.Log("Uninitialize");
             return;
         }
 
@@ -196,10 +199,12 @@ public class LobbyUIMediator : MonoBehaviour
 
         if (result.Success)
         {
+            Debug.Log("Joined");
             OnJoinedLobby(result.Lobby);
         }
         else
         {
+            Debug.Log("JoinError");
             UnblockUIAfterLoadingIsComplete();
         }
     }
@@ -235,6 +240,10 @@ public class LobbyUIMediator : MonoBehaviour
         m_LobbyCreationUI.Show();
         m_JoinButtonGO.GetComponent<Image>().color = Color.HSVToRGB(0, 0, 38);
         m_CreateButtonGO.GetComponent<Image>().color = Color.HSVToRGB(0, 0, 10);
+    }
+    public void RegerateName()
+    {
+        m_LocalUser.DisplayName = m_NameGenerationData.GenerateName();
     }
     public void BackToMainMenu()
     {

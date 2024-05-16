@@ -199,6 +199,16 @@ PrefabInstance:
       propertyPath: m_ProtocolType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 507374194955537055, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
+        type: 3}
+      propertyPath: m_MaxConnectAttempts
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 507374194955537055, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
+        type: 3}
+      propertyPath: m_MaxPacketQueueSize
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 1962807129703177860, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
         type: 3}
       propertyPath: m_Name
@@ -210,6 +220,31 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7727599077445422343, guid: d52c98a77b8667146bc859e9de9fae9b,
         type: 3}
+    - target: {fileID: 2368828886050554931, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
+        type: 3}
+      propertyPath: NetworkConfig.ForceSamePrefabs
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2368828886050554931, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
+        type: 3}
+      propertyPath: NetworkConfig.LoadSceneTimeOut
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2368828886050554931, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
+        type: 3}
+      propertyPath: NetworkConfig.ConnectionApproval
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2368828886050554931, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
+        type: 3}
+      propertyPath: NetworkConfig.EnableSceneManagement
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2368828886050554931, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
+        type: 3}
+      propertyPath: NetworkConfig.ClientConnectionBufferTimeout
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8514587279862695399, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
         type: 3}
       propertyPath: m_LocalPosition.x

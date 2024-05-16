@@ -10,6 +10,8 @@ public class ClientMainMenuState : GameStateBehaviour
     public override GameState ActiveState => GameState.MainMenu;
 
     [SerializeField]
+    NameGenerationData m_NameGenerationData;
+    [SerializeField]
     LobbyUIMediator m_LobbyUIMediator;
     [SerializeField]
     Button m_LobbyButton;
@@ -37,6 +39,7 @@ public class ClientMainMenuState : GameStateBehaviour
     {
         base.Configure(builder);
         builder.RegisterComponent(m_LobbyUIMediator);
+        builder.RegisterComponent(m_NameGenerationData);
     }
 
     protected override void OnDestroy()

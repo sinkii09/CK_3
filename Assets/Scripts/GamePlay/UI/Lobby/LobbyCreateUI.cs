@@ -25,7 +25,7 @@ public class LobbyCreateUI : MonoBehaviour
     }
     public void OnCreateClick()
     {
-        m_LobbyUIMediator.CreateLobbyRequest(m_LobbyNameInputField.text, m_IsPrivate);
+        m_LobbyUIMediator.CreateLobbyRequest(m_LobbyNameInputField.text, m_IsPrivate.isOn);
     }
     public void Show()
     {

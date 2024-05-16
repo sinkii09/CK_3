@@ -22,12 +22,17 @@ public class ConnectionMethodRelay : ConnectionMethodBase
 
     public override async Task SetupClientConnectionAsync()
     {
-        if(m_LobbyServiceFacade.CurrentUnityLobby ==  null)
+        SetConnectionPayload(GetPlayerId(), m_PlayerName);
+
+        if (m_LobbyServiceFacade.CurrentUnityLobby ==  null)
         {
             throw new Exception("Trying to start relay while Lobby isn't set");
         }
-
         var joinedAllocation = await RelayService.Instance.JoinAllocationAsync(m_LocalLobby.RelayJoinCode);
+
+        Debug.Log($"client: {joinedAllocation.ConnectionData[0]} {joinedAllocation.ConnectionData[1]}, " +
+                $"host: {joinedAllocation.HostConnectionData[0]} {joinedAllocation.HostConnectionData[1]}, " +
+                $"client: {joinedAllocation.AllocationId}");
 
         await m_LobbyServiceFacade.UpdatePlayerDataAsync(joinedAllocation.AllocationId.ToString(), m_LocalLobby.RelayJoinCode);
 
@@ -37,10 +42,11 @@ public class ConnectionMethodRelay : ConnectionMethodBase
 
     public override async Task SetupHostConnectionAsync()
     {
+        SetConnectionPayload(GetPlayerId(), m_PlayerName);
+
         Allocation hostAllocation = await RelayService.Instance.CreateAllocationAsync(m_ConnectionManager.MaxConnectedPlayers);
 
         var joinCode = await RelayService.Instance.GetJoinCodeAsync(hostAllocation.AllocationId);
-    
         m_LocalLobby.RelayJoinCode = joinCode;
 
         await m_LobbyServiceFacade.UpdateLobbyDataAndUnlockAsync();

@@ -81,7 +81,6 @@ public class LobbyServiceFacade : IDisposable, IStartable
     }
     public void EndTracking()
     {
-
         if (m_IsTracking)
         {
             m_IsTracking = false;
@@ -114,7 +113,7 @@ public class LobbyServiceFacade : IDisposable, IStartable
         }
         try
         {
-            var lobby = await m_LobbyApiInterface.CreateLobby(AuthenticationService.Instance.PlayerId, lobbyName, maxPlayers, isPrivate, m_LocalLobbyUser.GetDataForUnityServices(), null); ;
+            var lobby = await m_LobbyApiInterface.CreateLobby(AuthenticationService.Instance.PlayerId, lobbyName, maxPlayers, isPrivate, m_LocalLobbyUser.GetDataForUnityServices(), null); 
             return (true, lobby);   
         }
         catch (LobbyServiceException ex)

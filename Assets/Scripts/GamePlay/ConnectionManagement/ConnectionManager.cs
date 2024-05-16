@@ -23,6 +23,14 @@ public struct ConnectionEventMessage : INetworkSerializeByMemcpy
 {
     public ConnectStatus ConnectStatus;
 }
+[Serializable]
+public class ConnectionPayload
+{
+    public string playerId;
+    public string playerName;
+    public bool isDebug;
+}
+
 public class ConnectionManager : MonoBehaviour
 {
     [Inject]
@@ -108,6 +116,7 @@ public class ConnectionManager : MonoBehaviour
 
     private void OnClientConnectedCallback(ulong ClientId)
     {
+        Debug.Log("On CL callback");
         m_CurrentState.OnClientConnected(ClientId);
     }
     public void StartClientLobby(string playerName)

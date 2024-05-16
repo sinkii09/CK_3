@@ -2,14 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using VContainer;
 
 //TODO:
 public class OfflineState : ConnectionState
 {
+    [Inject]
+    LobbyServiceFacade m_LobbyServiceFacade;
+    [Inject]
+    LocalLobby m_LocalLobby;
+
     const string k_MainMenuSceneName = "MainMenu";
 
     public override void Enter()
     {
+        m_LobbyServiceFacade.EndTracking();
         m_ConnectionManager.NetworkManager.Shutdown();
         if (SceneManager.GetActiveScene().name != k_MainMenuSceneName)
         {
@@ -29,7 +36,8 @@ public class OfflineState : ConnectionState
 
     public override void StartClientLobby(string playerName)
     {
-        m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientConnecting);
+        var connectionMethod = new ConnectionMethodRelay(m_LobbyServiceFacade, m_LocalLobby, m_ConnectionManager, playerName);
+        m_ConnectionManager.ChangeState(m_ConnectionManager.m_ClientConnecting.Configure(connectionMethod));
     }
 
     public override void StartHostIP(string playerName, string ipaddress, int port)
@@ -39,6 +47,7 @@ public class OfflineState : ConnectionState
 
     public override void StartHostLobby(string playerName)
     {
-        m_ConnectionManager.ChangeState(m_ConnectionManager.m_StartingHost);
+        var connectionMethod = new ConnectionMethodRelay(m_LobbyServiceFacade, m_LocalLobby, m_ConnectionManager, playerName);
+        m_ConnectionManager.ChangeState(m_ConnectionManager.m_StartingHost.Configure(connectionMethod));
     }
 }

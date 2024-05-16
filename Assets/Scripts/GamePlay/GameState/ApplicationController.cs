@@ -50,6 +50,7 @@ public class ApplicationController : LifetimeScope
         m_LobbyServiceFacade = Container.Resolve<LobbyServiceFacade>();
 
         DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(m_UpdateRunner.gameObject);
 
         SceneManager.LoadScene("MainMenu");
     }
