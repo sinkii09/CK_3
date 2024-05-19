@@ -16,6 +16,7 @@ public enum ActionLogic
     Chase,
     Dash,
     Toss,
+    Jump,
 }
 
 

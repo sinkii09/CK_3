@@ -6,23 +6,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions;
 
-public enum MovementState
-{
-    Idle = 0,
-    PathFollowing = 1,
-    Charging = 2,
-    Knockback = 3,
-}
-[Serializable]
-public enum MovementStatus
-{
-    Idle,         // not trying to move
-    Normal,       // character is moving (normally)
-    Uncontrolled, // character is being moved by e.g. a knockback -- they are not in control!
-    Slowed,       // character's movement is magically hindered
-    Hasted,       // character's movement is magically enhanced
-    Walking,      // character should appear to be "walking" rather than normal running (e.g. for cut-scenes)
-}
+
+
 public class ServerCharacterMovement : NetworkBehaviour
 {
     [SerializeField]
@@ -91,12 +76,12 @@ public class ServerCharacterMovement : NetworkBehaviour
             return;
         }
 #endif
-        m_MovementState = MovementState.PathFollowing;
+        m_MovementState = MovementState.Moving;
         m_NavPath.SetTargetPosition(position);
     }
     public void FollowTransform(Transform followTransform)
     {
-        m_MovementState = MovementState.PathFollowing;
+        m_MovementState = MovementState.Moving;
         m_NavPath.FollowTransform(followTransform);
     }
     public bool IsPerformingForcedMovement()

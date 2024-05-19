@@ -22,6 +22,9 @@ public class ServerGamePlayState : GameStateBehaviour
     NetcodeHooks m_NetcodeHooks;
 
     [SerializeField]
+    Countdown m_Countdown;
+
+    [SerializeField]
     private NetworkObject m_PlayerPrefab;
 
     [SerializeField]
@@ -61,21 +64,25 @@ public class ServerGamePlayState : GameStateBehaviour
             return;
         }
         m_PersistentGameState.Reset();
-        m_LifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
+        //m_LifeStateChangedEventMessageSubscriber.Subscribe(OnLifeStateChangedEventMessage);
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
         NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadEventComplete;
         NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
+
+        m_Countdown.PlayTimeExpired += CheckForGameOver;
     }
 
     void OnNetworkDespawn()
     {
-        if (m_LifeStateChangedEventMessageSubscriber != null)
-        {
-            m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
-        }
+        //if (m_LifeStateChangedEventMessageSubscriber != null)
+        //{
+        //    m_LifeStateChangedEventMessageSubscriber.Unsubscribe(OnLifeStateChangedEventMessage);
+        //}
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
         NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadEventComplete;
         NetworkManager.Singleton.SceneManager.OnSynchronizeComplete -= OnSynchronizeComplete;
+
+        m_Countdown.PlayTimeExpired -= CheckForGameOver;
     }
 
     private void OnSynchronizeComplete(ulong clientId)
@@ -97,6 +104,7 @@ public class ServerGamePlayState : GameStateBehaviour
                 SpawnPlayer(client.Key, false);
             }
         }
+        m_Countdown.StartCountdown();
     }
 
     private void SpawnPlayer(ulong clientId, bool lateJoin)
@@ -148,54 +156,60 @@ public class ServerGamePlayState : GameStateBehaviour
     IEnumerator WaitToCheckForGameOver()
     {
         yield return null;
-        CheckForGameOver();
+        //CheckForGameOver();
     }
-    private void OnLifeStateChangedEventMessage(LifeStateChangedEventMessage message)
-    {
-        switch(message.CharacterType)
-        {
-            case CharacterTypeEnum.Warrior:
-            case CharacterTypeEnum.Archer:
-            case CharacterTypeEnum.Mage:
-            case CharacterTypeEnum.Rogue:
-                if(message.LifeState == LifeState.Fainted)
-                {
-                    CheckForGameOver();
-                }
-                break;
-            case CharacterTypeEnum.Boss:
-                {
-                    if(message.LifeState == LifeState.Dead)
-                    {
-                        BossDefeated();
-                    }
-                    break;
-                }
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
+
+    #region FIX GamePlay
+    //TODO
+    //private void OnLifeStateChangedEventMessage(LifeStateChangedEventMessage message)
+    //{
+    //    switch(message.CharacterType)
+    //    {
+    //        case CharacterTypeEnum.Warrior:
+    //        case CharacterTypeEnum.Archer:
+    //        case CharacterTypeEnum.Mage:
+    //        case CharacterTypeEnum.Rogue:
+    //            if(message.LifeState == LifeState.Fainted)
+    //            {
+    //                CheckForGameOver();
+    //            }
+    //            break;
+    //        case CharacterTypeEnum.Boss:
+    //            {
+    //                if(message.LifeState == LifeState.Dead)
+    //                {
+    //                    BossDefeated();
+    //                }
+    //                break;
+    //            }
+    //        default:
+    //            throw new ArgumentOutOfRangeException();
+    //    }
+    //}
+    //private void CheckForGameOver()
+    //{
+    //    foreach (var serverCharacter in PlayerServerCharacter.GetPlayerServerCharacters())
+    //    {
+    //        if(serverCharacter != null && serverCharacter.LifeState == LifeState.Alive)
+    //        {
+    //            return;
+    //        }
+    //    }
+    //    StartCoroutine(CoroGameOver(2,false)) ;
+    //}
+    //void BossDefeated()
+    //{
+    //    StartCoroutine(CoroGameOver(5,true));
+    //}
     private void CheckForGameOver()
     {
-        foreach (var serverCharacter in PlayerServerCharacter.GetPlayerServerCharacters())
-        {
-            if(serverCharacter != null && serverCharacter.LifeState == LifeState.Alive)
-            {
-                return;
-            }
-        }
-        StartCoroutine(CoroGameOver(2,false)) ;
+        //StartCoroutine(CoroGameOver(2));
     }
-    void BossDefeated()
-    {
-        StartCoroutine(CoroGameOver(5,true));
-    }
-    IEnumerator CoroGameOver(float delay, bool isWon)
-    {
-        m_PersistentGameState.SetWinState(isWon ? WinState.Win : WinState.Loss);
-
+    IEnumerator CoroGameOver(float delay)
+    { 
         yield return new WaitForSeconds(delay);
 
         SceneLoaderWrapper.Instance.LoadScene("PostGame",useNetworkSceneManager:true);
-    }    
+    }
+    #endregion
 }

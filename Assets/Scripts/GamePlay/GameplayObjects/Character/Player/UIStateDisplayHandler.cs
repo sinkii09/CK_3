@@ -90,7 +90,7 @@ public class UIStateDisplayHandler : NetworkBehaviour
             m_NetworkHealthState.HitPointsReplenished -= DisplayUIHealth;
         }
     }
-    private void OnDestroy()
+    public override void OnDestroy()
     {
         base.OnDestroy();
         

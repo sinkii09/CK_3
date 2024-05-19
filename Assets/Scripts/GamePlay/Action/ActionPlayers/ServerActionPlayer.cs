@@ -28,7 +28,7 @@ public class ServerActionPlayer
     public ServerActionPlayer(ServerCharacter serverCharacter)
     {
         m_ServerCharacter = serverCharacter;
-        m_Movement = serverCharacter.Movement;
+        //m_Movement = serverCharacter.Movement;
         m_Queue = new List<Action>();
         m_NonBlockingActions = new List<Action>();
         m_LastUsedTimestamps = new Dictionary<ActionID, float>();
@@ -176,7 +176,7 @@ public class ServerActionPlayer
             }
 
             int index = SynthesizeTargetIfNecessary(0);
-            SynthesizeChaseIfNecessary(index);
+            //SynthesizeChaseIfNecessary(index);
 
             m_Queue[0].TimeStarted = Time.time;
             bool play = m_Queue[0].OnStart(m_ServerCharacter);
@@ -189,10 +189,10 @@ public class ServerActionPlayer
 
             // if this Action is interruptible, that means movement should interrupt it... character needs to be stationary for this!
             // So stop any movement that's already happening before we begin
-            if (m_Queue[0].Config.ActionInterruptible && !m_Movement.IsPerformingForcedMovement())
-            {
-                m_Movement.CancelMove();
-            }
+            //if (m_Queue[0].Config.ActionInterruptible && !m_Movement.IsPerformingForcedMovement())
+            //{
+            //    m_Movement.CancelMove();
+            //}
 
             // remember the moment when we successfully used this Action!
             m_LastUsedTimestamps[m_Queue[0].ActionID] = Time.time;
@@ -213,25 +213,25 @@ public class ServerActionPlayer
     /// and must have the ShouldClose flag set). This method must not be called when the queue is empty.
     /// </summary>
     /// <returns>The new index of the Action being operated on.</returns>
-    private int SynthesizeChaseIfNecessary(int baseIndex)
-    {
-        Action baseAction = m_Queue[baseIndex];
+    //private int SynthesizeChaseIfNecessary(int baseIndex)
+    //{
+    //    Action baseAction = m_Queue[baseIndex];
 
-        if (baseAction.Data.ShouldClose && baseAction.Data.TargetIds != null)
-        {
-            ActionRequestData data = new ActionRequestData
-            {
-                ActionID = GameDataSource.Instance.GeneralChaseActionPrototype.ActionID,
-                TargetIds = baseAction.Data.TargetIds,
-                Amount = baseAction.Config.Range
-            };
-            baseAction.Data.ShouldClose = false; //you only get to do this once!
-            Action chaseAction = ActionFactory.CreateActionFromData(ref data);
-            m_Queue.Insert(baseIndex, chaseAction);
-            return baseIndex + 1;
-        }
-        return baseIndex;
-    }
+    //    if (baseAction.Data.ShouldClose && baseAction.Data.TargetIds != null)
+    //    {
+    //        ActionRequestData data = new ActionRequestData
+    //        {
+    //            ActionID = GameDataSource.Instance.GeneralChaseActionPrototype.ActionID,
+    //            TargetIds = baseAction.Data.TargetIds,
+    //            Amount = baseAction.Config.Range
+    //        };
+    //        baseAction.Data.ShouldClose = false; //you only get to do this once!
+    //        Action chaseAction = ActionFactory.CreateActionFromData(ref data);
+    //        m_Queue.Insert(baseIndex, chaseAction);
+    //        return baseIndex + 1;
+    //    }
+    //    return baseIndex;
+    //}
 
     /// <summary>
     /// Targeted skills should implicitly set the active target of the character, if not already set.

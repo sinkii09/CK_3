@@ -129,6 +129,7 @@ public class ClientCharacter : NetworkBehaviour
             {
                 ActionRequestData data = new ActionRequestData { ActionID = GameDataSource.Instance.GeneralTargetActionPrototype.ActionID };
                 m_ClientActionPlayer.PlayAction(ref data);
+                gameObject.AddComponent<CameraController>();
                 if (m_ServerCharacter.TryGetComponent(out ClientInputSender inputSender))
                 {
                     // anticipated actions will only be played on non-host, owning clients
@@ -189,10 +190,10 @@ public class ClientCharacter : NetworkBehaviour
                 return m_VisualizationConfiguration.SpeedIdle;
             case MovementStatus.Normal:
                 return m_VisualizationConfiguration.SpeedNormal;
-            case MovementStatus.Slowed:
-                return m_VisualizationConfiguration.SpeedSlowed;
             case MovementStatus.Hasted:
                 return m_VisualizationConfiguration.SpeedHasted;
+            case MovementStatus.Jump:
+                return m_VisualizationConfiguration.SpeedJump;
             default:
                 throw new Exception($"Unknown MovementStatus {movementStatus}");
         }

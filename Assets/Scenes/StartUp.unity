@@ -197,7 +197,7 @@ PrefabInstance:
     - target: {fileID: 507374194955537055, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
         type: 3}
       propertyPath: m_ProtocolType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 507374194955537055, guid: 9221a0cfceae87c4e8dd77c24e6d1b44,
         type: 3}

@@ -32,13 +32,11 @@ public class GameDataSource : MonoBehaviour
     }
 
     [Header("Common action prototypes")]
-    [SerializeField]
-    Action m_GeneralChaseActionPrototype;
+
     [SerializeField]
     Action m_GeneralTargetActionPrototype;
     [SerializeField]
     Action m_StunnedActionPrototype;
-    public Action GeneralChaseActionPrototype => m_GeneralChaseActionPrototype;
     public Action GeneralTargetActionPrototype => m_GeneralTargetActionPrototype;
     public Action StunnedActionPrototype => m_StunnedActionPrototype;
     [SerializeField]
@@ -79,7 +77,6 @@ public class GameDataSource : MonoBehaviour
     private void BuildActionIDs()
     {
         var uniqueActions = new HashSet<Action>(m_ActionPrototypes);
-        uniqueActions.Add(GeneralChaseActionPrototype);
         uniqueActions.Add(GeneralTargetActionPrototype);
         //uniqueActions.Add(StunnedActionPrototype);
 

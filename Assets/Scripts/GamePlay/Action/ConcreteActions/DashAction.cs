@@ -56,7 +56,7 @@ public class DashAction : Action
             serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim2);
         }
 
-        serverCharacter.Movement.Teleport(m_TargetSpot);
+        //serverCharacter.Movement.Teleport(m_TargetSpot);
 
         if(serverCharacter.CharacterType.Equals(CharacterTypeEnum.Rogue))
         {

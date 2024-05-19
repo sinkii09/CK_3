@@ -47,16 +47,11 @@ MonoBehaviour:
   m_CharacterData:
   - {fileID: 11400000, guid: e1f3cd340338a524c8beb56bdf15df7f, type: 2}
   - {fileID: 11400000, guid: 47be7a872ae70a14391795705e7b848b, type: 2}
-  m_GeneralChaseActionPrototype: {fileID: 11400000, guid: 8241302113943ee47b561021d0f50750,
-    type: 2}
   m_GeneralTargetActionPrototype: {fileID: 11400000, guid: 71b20fb464a82d144a84f42527985ca7,
     type: 2}
   m_StunnedActionPrototype: {fileID: 0}
   m_ActionPrototypes:
   - {fileID: 11400000, guid: 63bfe59f8351deb4dac9b0cf122586cb, type: 2}
   - {fileID: 11400000, guid: 9e564af506b50d748a2dab1e1d1d90b8, type: 2}
-  - {fileID: 11400000, guid: 7bc3a5a05370b0640bef2947e44c1a08, type: 2}
-  - {fileID: 11400000, guid: 221677b346e90954e99d2b88f0a62832, type: 2}
   - {fileID: 11400000, guid: 8e30654f49d4e9248bd3602c830b4299, type: 2}
   - {fileID: 11400000, guid: 56007dbeb49e86e4290b24568b0b7872, type: 2}
-  - {fileID: 11400000, guid: ea67fe57985320a489e1cc2aecc770b3, type: 2}

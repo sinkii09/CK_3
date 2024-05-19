@@ -16,8 +16,8 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
 
     [Header("Movement Handler")]
     [SerializeField]
-    ServerCharacterMovement m_Movement;
-    public ServerCharacterMovement Movement => m_Movement;
+    NewCharacterMovement m_Movement;
+    public NewCharacterMovement Movement => m_Movement;
 
     [Header("Physics Handler")]
     [SerializeField]
@@ -65,7 +65,7 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
 
     #region Variables
     public NetworkVariable<MovementStatus> MovementStatus { get; } = new NetworkVariable<MovementStatus>();
-    public NetworkVariable<ulong> HeldNetworkObject { get; } = new NetworkVariable<ulong>();
+    public NetworkVariable<ulong> HeldItem { get; } = new NetworkVariable<ulong>();
     public NetworkVariable<ulong> TargetId { get; } = new NetworkVariable<ulong>();
 
     public int HitPoints
@@ -79,11 +79,6 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
         private set => NetLifeState.LifeState.Value = value;
     }
     public CharacterTypeEnum CharacterType => CharacterClass.CharacterType;
-
-
-    private AIBrain m_AIBrain;
-    public AIBrain AIBrain { get { return m_AIBrain; } }
-
     public bool IsValidTarget => LifeState != LifeState.Dead;
     public bool IsNPC => CharacterClass.IsNpc;
 
@@ -110,10 +105,6 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
     private void Update()
     {
         m_ServerActionPlayer.OnUpdate();
-        if (m_AIBrain != null && LifeState == LifeState.Alive && m_BrainEnabled)
-        {
-            m_AIBrain.Update();
-        }
     }
     #endregion
 
@@ -130,10 +121,6 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
             m_DamageReceiver.DamageReceived += ReceiveHP;
             m_DamageReceiver.CollisionEntered += CollisionEntered;
 
-            if (IsNPC)
-            {
-                m_AIBrain = new AIBrain(this, m_ServerActionPlayer);
-            }
             if (m_StartingAction != null)
             {
                 var startingAction = new ActionRequestData() { ActionID = m_StartingAction.ActionID };
@@ -156,9 +143,9 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
 
     #region ServerRPC
     [ServerRpc]
-    public void SendCharacterInputServerRpc(Vector3 movementTarget)
+    public void SendCharacterInputServerRpc(Vector3 movementTarget, bool canJump = false)
     {
-        if (LifeState == LifeState.Alive && !m_Movement.IsPerformingForcedMovement())
+        if (LifeState == LifeState.Alive/* && !m_Movement.IsPerformingForcedMovement()*/)
         {
             if (m_ServerActionPlayer.GetActiveActionInfo(out ActionRequestData data))
             {
@@ -168,7 +155,12 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
                 }
             }
             m_ServerActionPlayer.CancelRunningActionsByLogic(ActionLogic.Target, true);
-            m_Movement.SetMovementTarget(movementTarget);
+            if (canJump)
+            {
+                m_Movement.SetJump();
+                return;
+            }
+            m_Movement.SetMoveDirection(movementTarget);
         }
     }
     [ServerRpc]
@@ -191,7 +183,7 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
     #region Others
     public void PlayAction(ref ActionRequestData action)
     {
-        if (LifeState == LifeState.Alive && !m_Movement.IsPerformingForcedMovement())
+        if (LifeState == LifeState.Alive/* && !m_Movement.IsPerformingForcedMovement()*/)
         {
             if (action.CancelMovement)
             {
@@ -239,11 +231,6 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
         }
         HitPoints = Mathf.Clamp(HitPoints + HP, 0, CharacterClass.BaseHP);
 
-        if (m_AIBrain != null)
-        {
-            //let the brain know about the modified amount of damage we received.
-            m_AIBrain.ReceiveHP(inflicter, HP);
-        }
         if (HitPoints <= 0)
         {
             if (IsNPC)

@@ -19,7 +19,7 @@ public class VisualizationConfiguration : ScriptableObject
     public float SpeedIdle = 0;
     public float SpeedNormal = 1;
     public float SpeedHasted = 1.5f;
-    public float SpeedSlowed = 2;
+    public float SpeedJump = 2;
 
     [Header("Associated Resources")]
     public GameObject TargetReticule;

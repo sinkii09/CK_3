@@ -26,8 +26,6 @@ public abstract class Action : ScriptableObject
 
     public ActionConfig Config;
 
-    public bool IsChaseAction => ActionID == GameDataSource.Instance.GeneralChaseActionPrototype.ActionID;
-
     public bool IsStunAction => ActionID == GameDataSource.Instance.StunnedActionPrototype.ActionID;
 
     public bool IsGeneralTargetAction => ActionID == GameDataSource.Instance.GeneralTargetActionPrototype.ActionID;

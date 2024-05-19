@@ -55,9 +55,6 @@ public class ClientInputSender : NetworkBehaviour
     int m_ActionRequestCount;
 
     public ActionState baseAttack { get; private set; }
-    public ActionState actionState1 { get; private set; }
-    public ActionState actionState2 { get; private set; }
-    public ActionState actionState3 { get; private set; }
 
     LayerMask m_GroundLayerMask;
     LayerMask m_ActionLayerMask;
@@ -86,6 +83,8 @@ public class ClientInputSender : NetworkBehaviour
     private bool canDoAction;
 
     CharacterClass CharacterClass => m_ServerCharacter.CharacterClass;
+
+    public NetworkVariable<ulong> HeldNetworkItem { get; } = new NetworkVariable<ulong>();
     #endregion
     public override void OnNetworkSpawn()
     {
@@ -94,9 +93,14 @@ public class ClientInputSender : NetworkBehaviour
             enabled = false;
             return;
         }
+        m_InputManager.MoveEvent += HandleMovement;
+        m_InputManager.JumpEvent += HandleJump;
+        m_ServerCharacter.HeldItem.OnValueChanged += OnHeldNetworkItemChanged;
 
         m_GroundLayerMask = LayerMask.GetMask(new[] { "Ground" });
         m_ActionLayerMask = LayerMask.GetMask(new[] { "Player"," NPCs" , "Ground" });
+
+
 
         if (CharacterClass.BaseAttack && GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.BaseAttack.ActionID, out var baseAttack))
         {
@@ -106,76 +110,24 @@ public class ClientInputSender : NetworkBehaviour
                 selectable = true,
             };
         }
-        if (CharacterClass.Skill1 &&
-            GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill1.ActionID, out var action1))
-        {
-            actionState1 = new ActionState() 
-            { 
-                actionID = action1.ActionID, 
-                selectable = true 
-            };
-        }
-        if (CharacterClass.Skill2 &&
-            GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill2.ActionID, out var action2))
-        {
-            actionState2 = new ActionState() 
-            { 
-                actionID = action2.ActionID, 
-                selectable = true 
-            };
-        }
-        if (CharacterClass.Skill3 &&
-            GameDataSource.Instance.TryGetActionPrototypeByID(CharacterClass.Skill3.ActionID, out var action3))
-        {
-            actionState3 = new ActionState() 
-            { 
-                actionID = action3.ActionID, 
-                selectable = true 
-            };
-        }
     }
+
     public override void OnNetworkDespawn()
     {
         if(m_ServerCharacter)
         {
-
+            m_InputManager.MoveEvent -= HandleMovement;
+            m_InputManager.JumpEvent -= HandleJump;
+            m_ServerCharacter.HeldItem.OnValueChanged -= OnHeldNetworkItemChanged;
         }
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Q))
-        {
-            RequestAction(actionState1.actionID, SkillTriggerStyle.Keyboard);
-        }
-        else if(Input.GetKeyUp(KeyCode.Q))
-        {
-            RequestAction(actionState1.actionID, SkillTriggerStyle.KeyboardRelease);
-        }
-        if(Input.GetKeyDown(KeyCode.W))
-        {
-            RequestAction(actionState2.actionID, SkillTriggerStyle.Keyboard);
-        }
-        else if (Input.GetKeyUp(KeyCode.W))
-        {
-            RequestAction(actionState2.actionID, SkillTriggerStyle.KeyboardRelease);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            RequestAction(actionState3.actionID, SkillTriggerStyle.Keyboard);
-        }
-        else if (Input.GetKeyUp(KeyCode.E))
-        {
-            RequestAction(actionState3.actionID, SkillTriggerStyle.KeyboardRelease);
-        }
         if (!EventSystem.current.IsPointerOverGameObject() && m_CurrentSkillInput == null)
         {
             if(m_InputManager.IsLeftMouseButtonDownThisFrame())
             {
-                RequestAction(CharacterClass.BaseAttack.ActionID, SkillTriggerStyle.MouseClick);
-            }
-            else if(m_InputManager.IsRightMouseButtonDownThisFrame())
-            {
-                m_MoveRequest = true;
+                RequestAction(baseAttack.actionID, SkillTriggerStyle.MouseClick);
             }
         }
     }
@@ -211,33 +163,14 @@ public class ClientInputSender : NetworkBehaviour
         {
             return;
         }
-        if (m_MoveRequest)
-        {
-            m_MoveRequest = false;
-            if((Time.time - m_LastSentMove) > k_MoveSendRateSeconds)
-            {
-                m_LastSentMove = Time.time;
-                Ray ray = Camera.main.ScreenPointToRay(m_InputManager.GetMouseScreenPosition());
-
-                var groundHits = Physics.RaycastNonAlloc(ray, k_CachedHit, k_MouseInputRaycastDistance, m_GroundLayerMask);
-                if(groundHits > 0)
-                {
-                    if(groundHits > 1)
-                    {
-                        Array.Sort(k_CachedHit,0, groundHits,m_RaycastHitComparer);
-                    }
-                    if (NavMesh.SamplePosition(k_CachedHit[0].point,
-                                out var hit,
-                                k_MaxNavMeshDistance,
-                                NavMesh.AllAreas))
-                    {
-                        m_ServerCharacter.SendCharacterInputServerRpc(hit.position);
-                        ClientMoveEvent?.Invoke(hit.position);
-                    }
-                }
-            }
-
-        }
+    }
+    void HandleJump(bool canJump)
+    {
+        m_ServerCharacter.SendCharacterInputServerRpc(Vector3.zero,canJump);
+    }
+    void HandleMovement(Vector2 moveDir)
+    {
+        m_ServerCharacter.SendCharacterInputServerRpc(moveDir);
     }
     void SendInput(ActionRequestData action)
     {
@@ -309,6 +242,10 @@ public class ClientInputSender : NetworkBehaviour
                 resultData.ShouldClose = false;
                 resultData.CancelMovement = true;
                 return;
+            case ActionLogic.Jump: 
+                resultData.Direction = direction;
+                resultData.CancelMovement = true;
+                return;
         }
     }
     
@@ -322,7 +259,26 @@ public class ClientInputSender : NetworkBehaviour
             m_ActionRequestCount++;
         }
     }
-    
+
+    private void OnHeldNetworkItemChanged(ulong previousValue, ulong newValue)
+    {
+        UpdateAction();
+    }
+
+    private void UpdateAction()
+    {
+
+        // lay duoc id cua action trong item
+        var isHaveItem = NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(m_ServerCharacter.HeldItem.Value, out var itemObject);
+        if(isHaveItem)
+        {
+
+            baseAttack.actionID = itemObject.GetComponent<Item>().m_ItemConfig.m_Action.ActionID;
+
+            Debug.Log("UpdateBaseAttack " + baseAttack.actionID.ToString());
+        }
+    }
+
     void FinishSkill()
     {
         m_CurrentSkillInput = null;

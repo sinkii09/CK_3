@@ -9,35 +9,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c4bde24aa26c834b9227d7f18017532, type: 3}
-  m_Name: New Launch Curve Projectile Action
+  m_Script: {fileID: 11500000, guid: 561ccf5b6c6fe5041a881625c0594a08, type: 3}
+  m_Name: CrossBowAction
   m_EditorClassIdentifier: 
   Config:
-    Logic: 6
+    Logic: 2
     Amount: 0
     ManaCost: 0
     Range: 20
-    DurationSeconds: 0
-    ExecTimeSeconds: 0
+    DurationSeconds: 0.55
+    ExecTimeSeconds: 0.15
     EffectDurationSeconds: 0
-    ReuseTimeSeconds: 0
-    AnimAnticipation: 
+    ReuseTimeSeconds: 0.25
+    AnimAnticipation: AnticipateMove
     Anim: BaseAttack
     Anim2: 
     ReactAnim: 
     OtherAnimatorVariable: 
-    Radius: 3.87
-    ActionInput: {fileID: 1638009621977115915, guid: fe436d0d50d485a4195893444a6b1229,
-      type: 3}
+    Radius: 0
+    ActionInput: {fileID: 0}
     ActionInterruptible: 0
     IsInterruptableBy: []
     BlockingMode: 1
     Projectiles:
-    - Prefab: {fileID: 811049029063674749, guid: 7667d722ef3dd464089bf0f06bdb72fd,
+    - Prefab: {fileID: 8787849450496161361, guid: 5094fb4861952a7468cce45c0f1b9bd7,
         type: 3}
-      Speed: 15
-      Range: 5
+      Speed: 20
+      Range: 100
       Damage: 10
-      MaxVictims: 10
+      MaxVictims: 1
     Spawns: []
     IsFriendly: 0

@@ -36,7 +36,7 @@ public partial class TargetAction : Action
     {
         bool isValid = ActionUtils.IsValidTarget(TargetId);
 
-        if (clientCharacter.ActionPlayer.RunningActionCount == 1 && !clientCharacter.Movement.IsMoving() && isValid)
+        if (clientCharacter.ActionPlayer.RunningActionCount == 1 && /* !clientCharacter.Movement.IsMoving() &&*/ isValid)
         {
             //we're the only action running, and we're not moving, so let's swivel to face our target, just to be cool!
             FaceTarget(clientCharacter, TargetId);

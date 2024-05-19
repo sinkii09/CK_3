@@ -20,21 +20,11 @@ public class CharacterClass : ScriptableObject
 
     public Action BaseAttack;
 
-    public Action Skill1;
-
-    public Action Skill2;
-
-    public Action Skill3;
-
     public int BaseHP;
-
-    public int BaseMana;
 
     public float Speed;
 
     public bool IsNpc;
-
-    public float DetectRange;
 
     public string DisplayedName;
 }
