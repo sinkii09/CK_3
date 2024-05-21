@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.CK.GamePlay.GameplayObjects;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ClientCharacter : NetworkBehaviour
@@ -41,7 +42,43 @@ public class ClientCharacter : NetworkBehaviour
     #endregion
 
     #region ClientRPC
+    [Rpc(SendTo.Everyone)]
+    public void RecvUpdateActionVisualClientRpc(ActionID actionID)
+    {
+        var avtGraphics = GetComponentInChildren<AvatarGraphics>();
+        var action = GameDataSource.Instance.GetActionPrototypeByID(actionID);
+        if (action.Config.Spawns.Length > 0)
+        {
+            foreach (var info in action.Config.Spawns)
+            {
+                Transform handSlot;
+                switch (info.HandSlot)
+                {
+                    case HandSlot.LeftHand:
+                        handSlot = avtGraphics.GetHandSlot(HandSlot.LeftHand);
+                        break;
+                    case HandSlot.RightHand:
+                        handSlot = avtGraphics.GetHandSlot(HandSlot.RightHand);
+                        break;
+                    default:
+                        handSlot = null;
+                        break;
+                }
+                if (handSlot)
+                {
+                    var weaponObj = Instantiate(info.Prefab,handSlot);
+                    weaponObj.transform.localPosition = Vector3.zero;
+                    weaponObj.transform.localRotation = Quaternion.Euler(Vector3.zero);
+                    
+                }
+            }
+        }
+        else
+        {
+            avtGraphics.ClearHandSlot();
+        }
 
+    }
     [ClientRpc]
     public void RecvDoActionClientRPC(ActionRequestData data)
     {

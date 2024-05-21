@@ -12,3 +12,10 @@ public struct ProjectileInfo
     public int Damage;
     public int MaxVictims;
 }
+
+[Serializable]
+public struct WeaponInfo
+{
+    public GameObject Prefab;
+    public HandSlot HandSlot;
+}

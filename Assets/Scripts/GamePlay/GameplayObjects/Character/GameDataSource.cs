@@ -38,7 +38,6 @@ public class GameDataSource : MonoBehaviour
     [SerializeField]
     Action m_StunnedActionPrototype;
     public Action GeneralTargetActionPrototype => m_GeneralTargetActionPrototype;
-    public Action StunnedActionPrototype => m_StunnedActionPrototype;
     [SerializeField]
     private Action[] m_ActionPrototypes;
 
@@ -78,7 +77,6 @@ public class GameDataSource : MonoBehaviour
     {
         var uniqueActions = new HashSet<Action>(m_ActionPrototypes);
         uniqueActions.Add(GeneralTargetActionPrototype);
-        //uniqueActions.Add(StunnedActionPrototype);
 
 
         m_AllActions = new List<Action>(uniqueActions.Count);

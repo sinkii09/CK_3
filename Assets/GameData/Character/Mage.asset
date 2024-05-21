@@ -10,16 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6358764c1c426474ca4e3a16ebc8941c, type: 3}
-  m_Name: Skeleton_Minion
+  m_Name: Mage
   m_EditorClassIdentifier: 
-  CharacterType: 5
-  BaseAttack: {fileID: 0}
-  Skill1: {fileID: 11400000, guid: 56007dbeb49e86e4290b24568b0b7872, type: 2}
-  Skill2: {fileID: 0}
-  Skill3: {fileID: 0}
-  BaseHP: 100
-  BaseMana: 0
-  Speed: 3
-  IsNpc: 1
-  DetectRange: 10
+  CharacterType: 2
+  BaseAttack: {fileID: 11400000, guid: 8e30654f49d4e9248bd3602c830b4299, type: 2}
+  BaseHP: 1000
+  Speed: 5
+  IsNpc: 0
   DisplayedName: 

@@ -224,7 +224,12 @@ public class ClientInputSender : NetworkBehaviour
             case ActionLogic.LaunchProjectile:
                 resultData.Direction = direction;
                 resultData.ShouldClose = false;
-                resultData.CancelMovement = true;
+                resultData.CancelMovement = false;
+                return;
+            case ActionLogic.Toss:
+                resultData.Direction = direction;
+                resultData.ShouldClose = false;
+                resultData.CancelMovement = false;
                 return;
             case ActionLogic.Melee:
                 resultData.Direction = direction;
@@ -267,16 +272,19 @@ public class ClientInputSender : NetworkBehaviour
 
     private void UpdateAction()
     {
-
         // lay duoc id cua action trong item
         var isHaveItem = NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(m_ServerCharacter.HeldItem.Value, out var itemObject);
         if(isHaveItem)
         {
-
             baseAttack.actionID = itemObject.GetComponent<Item>().m_ItemConfig.m_Action.ActionID;
-
-            Debug.Log("UpdateBaseAttack " + baseAttack.actionID.ToString());
+            m_ServerCharacter.SetAmountServerRpc(baseAttack.actionID);
+            itemObject.GetComponent<Item>().DeSpawnObject();
         }
+        else
+        {
+            baseAttack.actionID = CharacterClass.BaseAttack.ActionID;
+        }
+        m_ServerCharacter.clientCharacter.RecvUpdateActionVisualClientRpc(baseAttack.actionID);
     }
 
     void FinishSkill()

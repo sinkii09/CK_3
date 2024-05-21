@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Config:
     Logic: 2
-    Amount: 0
-    ManaCost: 0
+    Damage: 0
+    Amount: 2
     Range: 20
     DurationSeconds: 0.55
     ExecTimeSeconds: 0.15
     EffectDurationSeconds: 0
     ReuseTimeSeconds: 0.25
     AnimAnticipation: AnticipateMove
-    Anim: BaseAttack
+    Anim: CrossBow
     Anim2: 
     ReactAnim: 
     OtherAnimatorVariable: 
@@ -38,5 +38,10 @@ MonoBehaviour:
       Range: 100
       Damage: 10
       MaxVictims: 1
-    Spawns: []
+    Spawns:
+    - Prefab: {fileID: 5268761946081840267, guid: 309f75fa782d2e24e8c13423c86db7d7,
+        type: 3}
+      HandSlot: 1
+    SpecialFX: []
     IsFriendly: 0
+  m_CurrentAmount: 0

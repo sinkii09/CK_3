@@ -57,11 +57,6 @@ public class DashAction : Action
         }
 
         //serverCharacter.Movement.Teleport(m_TargetSpot);
-
-        if(serverCharacter.CharacterType.Equals(CharacterTypeEnum.Rogue))
-        {
-            //TODO: rougeAttack
-        }
     }
 
     public override void BuffValue(BuffableValue buffType, ref float buffedValue)

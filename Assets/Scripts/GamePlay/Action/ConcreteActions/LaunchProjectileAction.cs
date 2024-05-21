@@ -7,9 +7,9 @@ using UnityEngine;
 public class LaunchProjectileAction : Action
 {
     protected bool m_Launched = false;
-
     public override bool OnStart(ServerCharacter serverCharacter)
     {
+        serverCharacter.CheckAmountServerRpc();
         serverCharacter.physicsWrapper.Transform.forward = Data.Direction;
         serverCharacter.ServerAnimationHandler.NetworkAnimator.SetTrigger(Config.Anim);
         serverCharacter.clientCharacter.RecvDoActionClientRPC(Data);

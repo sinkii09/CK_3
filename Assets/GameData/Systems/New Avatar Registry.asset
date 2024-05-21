@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Avatars:
   - {fileID: 11400000, guid: 59ad1796c41837c4a88cc01ac69e356b, type: 2}
+  - {fileID: 11400000, guid: 117c3d00fed5d074f8a415d4455f904c, type: 2}
+  - {fileID: 11400000, guid: 3ec526ab0311f924e95252a1438ff056, type: 2}
+  - {fileID: 11400000, guid: f649ca91845a51b4a9c20cd365bc4b81, type: 2}
+  - {fileID: 11400000, guid: 444cf79ed3b91db47919a75ae062ca78, type: 2}
+  - {fileID: 11400000, guid: 2caafb9629ce95641828689a6a6849c4, type: 2}
+  - {fileID: 11400000, guid: 15130b561df878546afa6b82c50e5c26, type: 2}

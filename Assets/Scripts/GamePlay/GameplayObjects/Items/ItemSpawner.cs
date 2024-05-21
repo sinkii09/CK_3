@@ -9,6 +9,7 @@ public class ItemSpawner : NetworkBehaviour
     LayerMask k_ItemLayerMask;
     [SerializeField] private List<NetworkObject> m_ItemList;
     [SerializeField] private float m_TimeBetweenSpawn = 1f;
+    [SerializeField] private float m_TimeBetweenWave = 3f;
     [SerializeField] private float m_DelayStartTime = 30f;
     [SerializeField] private float m_SpawnRange = 10f;
     bool m_IsStarted;
@@ -38,7 +39,7 @@ public class ItemSpawner : NetworkBehaviour
         while(true)
         {
             yield return SpawnWave();
-            yield return new WaitForSeconds(10);
+            yield return new WaitForSeconds(m_TimeBetweenWave);
         }  
     }
     IEnumerator SpawnWave()
@@ -48,13 +49,12 @@ public class ItemSpawner : NetworkBehaviour
         {
             var newSpawn = SpawnItem();
             m_AtiveSpawns.Add(newSpawn);
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(m_TimeBetweenSpawn);
         }
     }
     NetworkObject SpawnItem()
     {
         int idx = Random.Range(0, m_ItemList.Count);
-        Debug.Log(idx);
         var clone = Instantiate(m_ItemList[idx],RandomPositionInRange(),Quaternion.identity);
         if(!clone.IsSpawned)
         {

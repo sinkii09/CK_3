@@ -4,13 +4,14 @@ using UnityEngine;
 
 public enum CharacterTypeEnum
 {
-    Warrior,
+    Babarian,
     Archer,
     Mage,
-    Rogue,
+    Knight,
 
-    Skeleton_minion,
-    Boss
+    Skeleton_mage,
+    Skeleton_Rouge,
+    Skeleton_Warrior,
 }
 
 [CreateAssetMenu(menuName = "GameData/CharacterClass", order = 1)]

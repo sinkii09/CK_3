@@ -17,7 +17,7 @@ MonoBehaviour:
     Amount: 10
     ManaCost: 0
     Range: 1
-    DurationSeconds: 1.4
+    DurationSeconds: 1
     ExecTimeSeconds: 0.65
     EffectDurationSeconds: 0
     ReuseTimeSeconds: 0
@@ -25,6 +25,7 @@ MonoBehaviour:
     Anim: BaseAttack
     Anim2: 
     ReactAnim: 
+    OtherAnimatorVariable: 
     Radius: 0
     ActionInput: {fileID: 0}
     ActionInterruptible: 1
@@ -32,4 +33,5 @@ MonoBehaviour:
     BlockingMode: 0
     Projectiles: []
     Spawns: []
+    SpecialFX: []
     IsFriendly: 0

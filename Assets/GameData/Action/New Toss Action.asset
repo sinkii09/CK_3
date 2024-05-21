@@ -14,15 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Config:
     Logic: 9
-    Amount: 0
-    ManaCost: 0
+    Damage: 0
+    Amount: 2
     Range: 15
-    DurationSeconds: 0.6
+    DurationSeconds: 1
     ExecTimeSeconds: 0.15
     EffectDurationSeconds: 0
-    ReuseTimeSeconds: 1
+    ReuseTimeSeconds: 0.5
     AnimAnticipation: 
-    Anim: Skill1
+    Anim: Toss
     Anim2: 
     ReactAnim: 
     OtherAnimatorVariable: 
@@ -30,7 +30,7 @@ MonoBehaviour:
     ActionInput: {fileID: 0}
     ActionInterruptible: 0
     IsInterruptableBy: []
-    BlockingMode: 0
+    BlockingMode: 1
     Projectiles:
     - Prefab: {fileID: 811049029063674749, guid: 4ef2937db2e373248a2768de576a43c5,
         type: 3}
@@ -39,4 +39,6 @@ MonoBehaviour:
       Damage: 20
       MaxVictims: 20
     Spawns: []
+    SpecialFX: []
     IsFriendly: 0
+  m_CurrentAmount: 0

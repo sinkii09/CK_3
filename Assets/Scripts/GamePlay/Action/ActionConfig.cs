@@ -25,9 +25,9 @@ public class ActionConfig
 {
     public ActionLogic Logic;
 
-    public int Amount;
+    public int Damage;
 
-    public int ManaCost;
+    public int Amount;
 
     public float Range;
 
@@ -61,7 +61,9 @@ public class ActionConfig
 
     public ProjectileInfo[] Projectiles;
 
-    public GameObject[] Spawns;
+    public WeaponInfo[] Spawns;
+
+    public GameObject[] SpecialFX;
 
     public bool IsFriendly;
 

@@ -31,7 +31,7 @@ public abstract class GameStateBehaviour : LifetimeScope
             Parent.Container.Inject(this);
         }
     }
-    private void Start()
+    protected virtual void Start()
     {
         if (s_ActiveStateGO != null)
         {

@@ -47,7 +47,7 @@ public class AOEAction : Action
             var enemy = colliders[i].GetComponent<IDamageable>();
             if(enemy != null)
             {
-                enemy.ReceiveHP(parent, -Config.Amount);
+                enemy.ReceiveHP(parent, -Config.Damage);
             }
         }
     }
@@ -55,9 +55,9 @@ public class AOEAction : Action
     public override bool OnStartClient(ClientCharacter clientCharacter)
     {
         base.OnStartClient(clientCharacter);
-        if(Config.Spawns.Length > 0)
+        if(Config.SpecialFX.Length > 0)
         {
-            GameObject.Instantiate(Config.Spawns[0], Data.Position, Quaternion.identity);
+            GameObject.Instantiate(Config.SpecialFX[0], Data.Position, Quaternion.identity);
         }
         return ActionConclusion.Stop;
 

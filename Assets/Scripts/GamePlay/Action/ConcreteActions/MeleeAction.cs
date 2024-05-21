@@ -47,8 +47,8 @@ public partial class MeleeAction : Action
             var foe = DetectFoe(clientCharacter, m_ProvisionalTarget);
             if (foe != null)
             {
-                Debug.Log(-Config.Amount);
-                foe.ReceiveHP(clientCharacter, -Config.Amount);
+                Debug.Log(-Config.Damage);
+                foe.ReceiveHP(clientCharacter, -Config.Damage);
             }
         }
 

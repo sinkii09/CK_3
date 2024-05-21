@@ -26,7 +26,7 @@ public abstract class Action : ScriptableObject
 
     public ActionConfig Config;
 
-    public bool IsStunAction => ActionID == GameDataSource.Instance.StunnedActionPrototype.ActionID;
+    public int m_CurrentAmount;
 
     public bool IsGeneralTargetAction => ActionID == GameDataSource.Instance.GeneralTargetActionPrototype.ActionID;
     public void Initialize(ref ActionRequestData data)
@@ -110,7 +110,7 @@ public abstract class Action : ScriptableObject
     protected List<SpecialFXGraphic> InstantiateSpecialFXGraphics(Transform origin, bool parentToOrigin)
     {
         var returnList = new List<SpecialFXGraphic>();
-        foreach (var prefab in Config.Spawns)
+        foreach (var prefab in Config.SpecialFX)
         {
             if (!prefab) { continue; } // skip blank entries in our prefab list
             returnList.Add(InstantiateSpecialFXGraphic(prefab, origin, parentToOrigin));

@@ -58,8 +58,8 @@ public class PhysicsProjectile : NetworkBehaviour
             m_HitTargets = new List<GameObject>();
             m_DestroyAtSec = Time.fixedTime + (m_ProjectileInfo.Range / m_ProjectileInfo.Speed);
 
-            m_CollisionMask = LayerMask.GetMask(new[] { "NPCs", "Default", "Environment" });
-            m_BlockerMask = LayerMask.GetMask(new[] { "Default", "Environment" });
+            m_CollisionMask = LayerMask.GetMask(new[] { "PCs", "Environment" });
+            m_BlockerMask = LayerMask.GetMask(new[] {  "Environment" });
             m_NpcLayer = LayerMask.NameToLayer("NPCs");
 
             if (IsClient)

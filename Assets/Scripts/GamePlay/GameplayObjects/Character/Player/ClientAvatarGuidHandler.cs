@@ -32,7 +32,7 @@ public class ClientAvatarGuidHandler : NetworkBehaviour
         {
             return;
         }
-        Instantiate(m_NetworkAvatarGuidState.RegisteredAvatar.Graphics, m_GraphicsAnimator.transform);
+        Instantiate(m_NetworkAvatarGuidState.RegisteredAvatar.Graphics.gameObject, m_GraphicsAnimator.transform);
         m_GraphicsAnimator.Rebind();
         m_GraphicsAnimator.Update(0f);
 

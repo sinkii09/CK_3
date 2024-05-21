@@ -73,6 +73,8 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
         get => NetHealthState.HitPoints.Value;
         private set => NetHealthState.HitPoints.Value = value;
     }
+
+    public int WeaponArmorAmount;
     public LifeState LifeState
     {
         get => NetLifeState.LifeState.Value;
@@ -177,6 +179,21 @@ public class ServerCharacter : NetworkBehaviour, ITargetable
     public void RecvStopChargingUpServerRpc()
     {
         m_ServerActionPlayer.OnGameplayActivity(Action.GameplayActivity.StoppedChargingUp);
+    }
+    [ServerRpc]
+    public void CheckAmountServerRpc()
+    {
+        if(WeaponArmorAmount<=1)
+        {
+            HeldItem.Value = 0;
+            return;
+        }
+        WeaponArmorAmount--;
+    }
+    [ServerRpc]
+    public void SetAmountServerRpc(ActionID actionId)
+    {
+        WeaponArmorAmount = GameDataSource.Instance.GetActionPrototypeByID(actionId).Config.Amount;
     }
     #endregion
 
